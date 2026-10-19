@@ -229,7 +229,7 @@ export default function Home() {
         }
         if (d.status === "unknown") {
           setChatError(
-            "Hermes a redémarré pendant cette recherche. Vérifie son état côté serveur avant de lancer une nouvelle exécution.",
+            "Le service a redémarré pendant cette recherche. Demande à l’administrateur de vérifier son état avant de la relancer.",
           );
           setPollPaused(true);
           return;
@@ -393,7 +393,7 @@ export default function Home() {
       if (!r.ok) throw new Error();
       setPollPaused(false);
       setChatError("");
-      setNotice("Arrêt demandé à Hermes.");
+      setNotice("Arrêt de la recherche demandé.");
     } catch {
       setChatError(
         "Impossible de confirmer l’arrêt. Vérifie la connexion avant de réessayer.",
@@ -1202,7 +1202,7 @@ export default function Home() {
                   <span>
                     {sending
                       ? "Connexion à l’atelier…"
-                      : "Recherche en cours avec Hermes…"}
+                      : "Le compagnon travaille sur votre demande…"}
                   </span>
                 </div>
               )}

@@ -15,7 +15,7 @@ async function proxy(
   const config = hermesConfig();
   if (!config)
     return NextResponse.json(
-      { error: "Hermes non configuré." },
+      { error: "L’assistant n’est pas encore connecté." },
       { status: 503 },
     );
   const { id } = await context.params;
@@ -43,8 +43,8 @@ async function proxy(
         {
           error:
             r.status === 404
-              ? "Cette exécution n’est plus disponible sur Hermes."
-              : "Le suivi Hermes est momentanément indisponible.",
+              ? "Le suivi de cette recherche n’est plus disponible."
+              : "Le suivi de la recherche est momentanément indisponible.",
         },
         { status: r.status === 404 ? 404 : 502 },
       );
@@ -57,7 +57,7 @@ async function proxy(
     return NextResponse.json(
       {
         error:
-          "Connexion à Hermes interrompue. Réessaie pour reprendre le suivi.",
+          "Connexion à l’assistant interrompue. Réessaie pour reprendre le suivi.",
       },
       { status: 502 },
     );

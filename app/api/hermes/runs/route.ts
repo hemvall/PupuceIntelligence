@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error:
-          "Hermes n’est pas encore connecté. Configure HERMES_URL et HERMES_API_KEY côté serveur. Tes dossiers et ta sélection restent utilisables.",
+          "L’assistant n’est pas encore connecté. Demande à l’administrateur d’activer la connexion. Tes dossiers et ta sélection restent utilisables.",
       },
       { status: 503 },
     );
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Hermes a refusé le lancement. Vérifie la connexion et sa configuration.",
+            "La recherche n’a pas pu démarrer. Demande à l’administrateur de vérifier la connexion.",
         },
         { status: 502 },
       );
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     );
   } catch {
     return NextResponse.json(
-      { error: "Impossible de joindre Hermes pour le moment." },
+      { error: "Impossible de joindre l’assistant pour le moment." },
       { status: 502 },
     );
   }
