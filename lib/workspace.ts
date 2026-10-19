@@ -4,7 +4,7 @@ const source = z.object({
   title: z.string(),
   creator: z.string(),
   date: z.string(),
-  kind: z.enum(["Œuvre", "Ouvrage", "Portail", "Cours"]),
+  kind: z.enum(["Œuvre", "Ouvrage", "Portail", "Cours", "Article"]),
   institution: z.string(),
   url: z.string(),
   description: z.string(),
@@ -12,7 +12,13 @@ const source = z.object({
   imageUrl: z.string().optional(),
   rights: z.string().optional(),
   inventory: z.string().optional(),
-  access: z.enum(["Notice consultée", "Texte importé", "Portail de recherche"]),
+  access: z.enum([
+    "Notice consultée",
+    "Texte importé",
+    "Portail de recherche",
+    "Page consultée",
+    "Passage consulté",
+  ]),
   retrievedAt: z.string(),
   text: z.string().optional(),
 });

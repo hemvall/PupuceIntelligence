@@ -1794,3 +1794,287 @@ h1 {
 .research-main > .exhibition {
   animation: fade-in 0.3s ease;
 }
+
+/* A reading room: quiet rules, generous plates, texture confined to the paper. */
+.app {
+  --muted: #706a60;
+  --accent: #593d32;
+}
+.app[data-theme="dark"] {
+  --muted: #b6ae9f;
+  --accent: #d3ae98;
+}
+.title-period,
+.atelier-seal,
+.footer-ornament,
+.assistant-symbol {
+  display: none;
+}
+.project-heading h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: -0.035em;
+}
+.project-heading > div > p {
+  font-size: 12px;
+}
+.eyebrow,
+.micro,
+.nav-label {
+  font-size: 10px;
+  letter-spacing: 0.07em;
+}
+.assistant-header h2 {
+  font-family: inherit;
+  font-size: 14px;
+}
+.assistant-welcome h3 {
+  font-size: 27px;
+  line-height: 1.15;
+}
+.assistant-welcome {
+  padding-top: 30px;
+}
+.assistant-welcome p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.main-footer {
+  margin-top: 36px;
+}
+.study-dossier {
+  max-width: 1000px;
+  margin: auto;
+}
+.study-plate {
+  margin: 24px 0 0;
+}
+.study-plate img {
+  width: 100%;
+  display: block;
+  height: auto;
+}
+.study-plate figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 20px;
+  padding: 13px 0 8px;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.plate-credit {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.plate-credit a,
+.study-bibliography a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.dossier-intro {
+  margin: 40px 0 24px;
+  padding-left: 22px;
+  border-left: 2px solid var(--accent);
+}
+.dossier-intro h2 {
+  font-family: "Libre Caslon Display", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 48px);
+  margin: 10px 0;
+}
+.dossier-intro p {
+  max-width: 65ch;
+  line-height: 1.8;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+.dossier-index {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 12px 0;
+  gap: 0 24px;
+}
+.dossier-index a {
+  padding: 9px 0;
+  font-size: 12px;
+  display: flex;
+  gap: 12px;
+}
+.dossier-index a:hover {
+  text-decoration: underline;
+}
+.dossier-index span,
+.study-number {
+  color: var(--muted);
+  font-family: Georgia, serif;
+}
+.study-section {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 16px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 24px;
+}
+.study-number {
+  font-size: 18px;
+  padding-top: 27px;
+}
+.study-status {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.study-section h2,
+.study-bibliography h2 {
+  font-family: "Libre Caslon Display", Georgia, serif;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.15;
+  margin: 8px 0 18px;
+}
+.study-section p {
+  font-size: 14px;
+  line-height: 1.85;
+  margin: 0 0 15px;
+  max-width: 74ch;
+}
+.study-refs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.study-refs button {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 3px 0;
+  text-align: left;
+}
+.study-bibliography {
+  padding: 30px 0;
+  scroll-margin-top: 24px;
+}
+.study-bibliography > p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+.bibliography-entry {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding: 20px 0;
+}
+.bibliography-entry > span {
+  color: var(--muted);
+  font-family: Georgia, serif;
+}
+.bibliography-entry button {
+  font-weight: 600;
+  font-size: 14px;
+  background: none;
+  padding: 0;
+  border: none;
+  text-align: left;
+}
+.bibliography-entry p {
+  margin: 7px 0;
+  font-size: 12px;
+  line-height: 1.75;
+}
+.bibliography-entry a {
+  font-size: 11px;
+}
+.dossier-next {
+  padding: 24px;
+  border: 1px solid var(--line);
+  background-image: radial-gradient(var(--line) 0.65px, transparent 0.65px);
+  background-size: 4px 4px;
+}
+.dossier-next h3 {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+}
+.dossier-next p {
+  margin: 12px 0 18px;
+  line-height: 1.8;
+}
+.study-guide {
+  border-bottom: 1px solid var(--line);
+  margin-top: 12px;
+}
+.guide-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 12px 0;
+  font-size: 12px;
+}
+.guide-body {
+  border-top: 1px solid var(--line);
+  padding: 20px 0;
+}
+.guide-body h3 {
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-weight: 400;
+  margin: 10px 0;
+}
+.guide-body p {
+  line-height: 1.8;
+  max-width: 65ch;
+  margin-bottom: 16px;
+}
+.guide-body > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+@media (min-width: 1450px) {
+  .research-main {
+    padding-left: 52px;
+    padding-right: 52px;
+  }
+}
+@media (max-width: 650px) {
+  .dossier-index {
+    grid-template-columns: 1fr;
+  }
+  .study-section {
+    grid-template-columns: 20px 1fr;
+    gap: 10px;
+  }
+  .study-plate figcaption {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tabs {
+    overflow-x: auto;
+  }
+  .tabs button {
+    white-space: nowrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+/* Grain belongs to the paper, never to the documentary reproductions. */
+.app::after { display: none; }
+.research-main, .sidebar { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23877c68' opacity='.035' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }

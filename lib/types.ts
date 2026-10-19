@@ -3,7 +3,7 @@ export type Source = {
   title: string;
   creator: string;
   date: string;
-  kind: "Œuvre" | "Ouvrage" | "Portail" | "Cours";
+  kind: "Œuvre" | "Ouvrage" | "Portail" | "Cours" | "Article";
   institution: string;
   url: string;
   description: string;
@@ -11,7 +11,12 @@ export type Source = {
   imageUrl?: string;
   rights?: string;
   inventory?: string;
-  access: "Notice consultée" | "Texte importé" | "Portail de recherche";
+  access:
+    | "Notice consultée"
+    | "Texte importé"
+    | "Portail de recherche"
+    | "Page consultée"
+    | "Passage consulté";
   retrievedAt: string;
   text?: string;
 };
