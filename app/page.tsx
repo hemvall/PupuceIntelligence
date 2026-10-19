@@ -28,6 +28,8 @@ import {
   X,
 } from "lucide-react";
 import type { Project, Source, Workspace } from "@/lib/types";
+import { Dossier, Guide } from "@/components/dossier";
+import { DOSSIER_ID, dossierSources, withDossier } from "@/lib/dossier";
 import { initialWorkspace } from "@/lib/seed";
 import { sourceLink, workspaceSchema } from "@/lib/workspace";
 const STORAGE = "pupuce-workspace-v1";
@@ -66,7 +68,7 @@ function Picture({
 export default function Home() {
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [area, setArea] = useState("research");
-  const [tab, setTab] = useState("explore");
+  const [tab, setTab] = useState("dossier");
   const [kind, setKind] = useState("Tout");
   const searchToken = useRef(0);
   const [query, setQuery] = useState("");
@@ -98,7 +100,7 @@ export default function Home() {
       if (raw) {
         const parsed = workspaceSchema.safeParse(JSON.parse(raw));
         if (parsed.success) {
-          setWorkspace(parsed.data);
+          setWorkspace(withDossier(parsed.data));
           return;
         }
         setSaveError(
@@ -257,7 +259,7 @@ export default function Home() {
     setSearching(false);
     setWorkspace((w) => (w ? { ...w, activeProject: id } : w));
     setArea("research");
-    setTab("explore");
+    setTab(id === DOSSIER_ID ? "dossier" : "explore");
     setResultIds(null);
     setWarnings([]);
     setQuery("");
@@ -343,13 +345,14 @@ export default function Home() {
         description: s.description,
       };
       const size = JSON.stringify(item).length;
-      if (contextSize + size > 34000) break;
+      if (contextSize + size > 24000) break;
       contextSources.push(item);
       contextSize += size;
     }
     const context = JSON.stringify({
       project: p.title,
-      notes: p.notes.slice(0, 8000),
+      notes: p.notes.slice(0, 16000),
+      notesTruncated: p.notes.length > 16000,
       sources: contextSources,
       omittedSources: selected.length - contextSources.length,
       notice:
@@ -486,7 +489,7 @@ export default function Home() {
       const parsed = workspaceSchema.safeParse(JSON.parse(await file.text()));
       if (!parsed.success)
         throw new Error("Ce fichier n’est pas une sauvegarde Pupuce valide.");
-      setWorkspace(parsed.data);
+      setWorkspace(withDossier(parsed.data));
       setModal(null);
       setDetail(null);
       setResultIds(null);
@@ -577,7 +580,7 @@ export default function Home() {
         <button className="new-project" onClick={() => setModal("project")}>
           <Plus size={15} /> Nouvelle recherche <span>↗</span>
         </button>
-        <div className="nav-label">MON ATELIER</div>
+        <div className="nav-label">DOCUMENTS</div>
         <nav aria-label="Navigation principale">
           {[
             { id: "research", label: "Recherches", icon: Search },
@@ -718,7 +721,7 @@ export default function Home() {
                 </h1>
                 <p>
                   {area === "research"
-                    ? "Des premières pistes aux idées qui prennent forme."
+                    ? "Sources, analyses et notes de travail."
                     : area === "library"
                       ? "Les références retrouvées et les documents que vous avez importés."
                       : "Importez un cours, puis préparez vos fiches avec l’assistant."}
@@ -744,7 +747,10 @@ export default function Home() {
                 aria-label="Étapes de recherche"
               >
                 {[
-                  { id: "explore", label: "Explorer", icon: Search },
+                  ...(project.id === DOSSIER_ID
+                    ? [{ id: "dossier", label: "Dossier", icon: BookOpen }]
+                    : []),
+                  { id: "explore", label: "Rechercher", icon: Search },
                   { id: "selection", label: "Ma sélection", icon: Bookmark },
                   { id: "notes", label: "Notes & plan", icon: FileText },
                 ].map((t) => (
@@ -765,7 +771,33 @@ export default function Home() {
                 ))}
               </div>
             )}
-            {tab === "notes" && area === "research" ? (
+            {area === "research" && project.id === DOSSIER_ID && (
+              <Guide
+                act={(step) => {
+                  if (step === 0) setDetail(dossierSources[0]);
+                  if (step === 1) setTab("selection");
+                  if (step === 2) {
+                    setAssistantOpen(true);
+                    setDraft(
+                      "Compare les sources sélectionnées sur L’Ange déchu. Distingue les faits documentés, les interprétations et les références non lues. Cite les documents utilisés.",
+                    );
+                  }
+                  if (step === 3) setTab("notes");
+                }}
+              />
+            )}
+            {tab === "dossier" &&
+            project.id === DOSSIER_ID &&
+            area === "research" ? (
+              <Dossier
+                inspect={setDetail}
+                notes={() => setTab("notes")}
+                prepare={(prompt) => {
+                  setDraft(prompt);
+                  setAssistantOpen(true);
+                }}
+              />
+            ) : tab === "notes" && area === "research" ? (
               <section className="notes-page">
                 <div className="section-heading">
                   <h2>Le carnet de recherche</h2>
@@ -850,7 +882,7 @@ export default function Home() {
                 ))}
                 <div className="filter-row">
                   <div className="chips">
-                    {["Tout", "Œuvre", "Ouvrage", "Portail", "Cours"]
+                    {["Tout", "Œuvre", "Ouvrage", "Article", "Portail", "Cours"]
                       .filter(
                         (k) =>
                           area !== "revisions" || k === "Tout" || k === "Cours",
@@ -878,46 +910,6 @@ export default function Home() {
                     {visible.length} ressource{visible.length !== 1 ? "s" : ""}
                   </span>
                 </div>
-                {area === "research" && tab === "explore" && !resultIds && (
-                  <section className="exhibition">
-                    <div className="exhibition-image">
-                      <img
-                        src="/art/socrates.jpg"
-                        alt="La Mort de Socrate, Jacques Louis David, 1787"
-                      />
-                      <div className="dither" />
-                    </div>
-                    <div className="exhibition-copy">
-                      <span className="eyebrow">
-                        LE CABINET D’ÉTUDE · Nº 01
-                      </span>
-                      <h2>
-                        Un regard neuf
-                        <br />
-                        sur les mondes anciens.
-                      </h2>
-                      <p>
-                        Rassembler les œuvres. Croiser les regards.
-                        <br />
-                        Faire émerger votre propre lecture.
-                      </p>
-                      <button
-                        className="text-button"
-                        onClick={() => {
-                          const s = workspace.sources.find(
-                            (s) => s.id === "met-436105",
-                          );
-                          if (s) setDetail(s);
-                        }}
-                      >
-                        Étudier la notice <ArrowRight size={14} />
-                      </button>
-                    </div>
-                    <span className="exhibition-credit">
-                      J. L. David · 1787 · The Met · CC0
-                    </span>
-                  </section>
-                )}
                 {searching && (
                   <div className="search-progress" role="status">
                     <LoaderCircle size={17} className="spin" />
@@ -1112,7 +1104,7 @@ export default function Home() {
             )}
             <footer className="main-footer">
               <span className="footer-ornament">✳</span>
-              <span>La recherche commence par une bonne question.</span>
+              <span>Documents et notes enregistrés dans ce navigateur.</span>
               <span>PUPUCE · ATELIER DOCUMENTAIRE</span>
             </footer>
           </main>
@@ -1125,8 +1117,8 @@ export default function Home() {
                 <Sparkles size={17} strokeWidth={1.3} />
               </div>
               <div>
-                <h2>Le compagnon d’étude</h2>
-                <span>À vos côtés, source après source.</span>
+                <h2>Assistant</h2>
+                <span>À partir du corpus sélectionné.</span>
               </div>
               <button
                 className="icon-button close-assistant"
@@ -1146,19 +1138,11 @@ export default function Home() {
             <div className="chat-scroll">
               {project.messages.length === 0 ? (
                 <div className="assistant-welcome">
-                  <div className="companion-emblem">
-                    <Landmark size={40} strokeWidth={0.8} />
-                    <div className="emblem-dither" />
-                  </div>
-                  <span className="eyebrow">CHAQUE IDÉE A UNE HISTOIRE</span>
-                  <h3>
-                    Par où
-                    <br />
-                    commençons-nous ?
-                  </h3>
+                  <h3>Interroger les documents</h3>
                   <p>
-                    Un sujet à explorer, des œuvres à rapprocher, un oral à
-                    préparer. Construisons votre recherche ensemble.
+                    Sélectionnez vos sources, puis formulez une demande. Une
+                    référence bibliographique ne donne pas accès au texte du
+                    livre.
                   </p>
                   <div className="prompt-list">
                     {[
@@ -1169,7 +1153,10 @@ export default function Home() {
                       <button
                         key={t}
                         disabled={sending || !!running}
-                        onClick={() => send(t)}
+                        onClick={() => {
+                          setDraft(t);
+                          setAssistantOpen(true);
+                        }}
                       >
                         {t}
                         <ArrowUp size={14} />
@@ -1189,7 +1176,7 @@ export default function Home() {
                 project.messages.map((m) => (
                   <div className={`message ${m.role}`} key={m.id}>
                     <div className="message-label">
-                      {m.role === "user" ? "VOUS" : "LE COMPAGNON"}
+                      {m.role === "user" ? "VOUS" : "ASSISTANT"}
                       {m.role === "assistant" && <Sparkles size={11} />}
                     </div>
                     <div className="message-body">{m.content}</div>
@@ -1200,9 +1187,7 @@ export default function Home() {
                 <div className="chat-progress" role="status">
                   <LoaderCircle size={14} className="spin" />
                   <span>
-                    {sending
-                      ? "Connexion à l’atelier…"
-                      : "Le compagnon travaille sur votre demande…"}
+                    {sending ? "Connexion à l’atelier…" : "Recherche en cours…"}
                   </span>
                 </div>
               )}

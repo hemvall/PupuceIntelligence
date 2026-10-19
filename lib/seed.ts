@@ -1,3 +1,4 @@
+import { withDossier, DOSSIER_ID } from "./dossier";
 import type { Workspace, Source } from "./types";
 const retrievedAt = "2026-10-19";
 export const portals: Source[] = [
@@ -97,9 +98,9 @@ const artworks: Source[] = [
   },
 ];
 export function initialWorkspace(): Workspace {
-  return {
+  return withDossier({
     version: 1,
-    activeProject: "achille",
+    activeProject: DOSSIER_ID,
     theme: "light",
     sources: [...artworks, ...portals],
     projects: [
@@ -113,5 +114,5 @@ export function initialWorkspace(): Workspace {
         sessionId: "pupuce-" + crypto.randomUUID(),
       },
     ],
-  };
+  });
 }
