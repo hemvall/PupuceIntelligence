@@ -5,6 +5,7 @@ import {
   hermesConfig,
   researchInstructions,
 } from "@/lib/hermes.mjs";
+import { recordRun } from "@/lib/monitoring";
 export const runtime = "nodejs";
 const schema = z.object({
   message: z.string().trim().min(1).max(12000),
@@ -65,6 +66,7 @@ export async function POST(request: NextRequest) {
       );
     const result = await upstream.json();
     if (typeof result.run_id !== "string") throw new Error("Invalid run");
+    await recordRun(result.run_id, { runId: result.run_id, requestId: data.data.requestId, sessionId: data.data.sessionId, prompt: data.data.message, context: data.data.context, status: "running", startedAt: new Date().toISOString() });
     return NextResponse.json(
       { run_id: result.run_id },
       { status: 202, headers: { "Cache-Control": "no-store" } },

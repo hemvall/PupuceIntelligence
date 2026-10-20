@@ -25,6 +25,7 @@ export type Message = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  change?: import("./assistant-changes").AssistantChange;
 };
 export type Project = {
   id: string;
@@ -41,6 +42,7 @@ export type Project = {
   documentOutline?: string[];
   documentBrief?: string;
   documentError?: string;
+  activeRunBase?: { notes: string; document: string };
   activeRun?: string;
   activeRunMessageId?: string;
 };

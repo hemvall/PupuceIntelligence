@@ -35,6 +35,9 @@ import { DOSSIER_ID, dossierSources, withDossier } from "@/lib/dossier";
 import { initialWorkspace } from "@/lib/seed";
 import { sourceLink, workspaceSchema } from "@/lib/workspace";
 
+import { textOf } from "@/lib/document/model";
+import { assistantResponse } from "@/lib/assistant-changes";
+import { Monitoring } from "@/components/monitoring";
 const uid = () => crypto.randomUUID();
 function download(name: string, content: string, type = "text/plain") {
   const url = URL.createObjectURL(new Blob([content], { type }));
@@ -225,6 +228,7 @@ export default function Home() {
         if (
           ["completed", "failed", "cancelled", "interrupted"].includes(d.status)
         ) {
+          const response = assistantResponse(typeof d.output === "string" ? d.output : "La recherche est terminée sans réponse textuelle.");
           updateProject(id, (p) => ({
             ...p,
             activeRun: undefined,
@@ -236,10 +240,8 @@ export default function Home() {
                     {
                       id: uid(),
                       role: "assistant",
-                      content:
-                        typeof d.output === "string"
-                          ? d.output
-                          : "La recherche est terminée sans réponse textuelle.",
+                      content: response.content,
+                      change: response.change && p.activeRunBase ? { ...response.change, baseNotes: p.activeRunBase.notes, baseDocument: p.activeRunBase.document, state: "pending" } : undefined,
                     },
                   ]
                 : p.messages,
@@ -373,15 +375,18 @@ export default function Home() {
       contextSize += size;
     }
     const context = JSON.stringify({
+      assistantEditing: true,
+      document: p.document,
       project: p.title,
-      notes: p.notes.slice(0, 16000),
-      notesTruncated: p.notes.length > 16000,
+      notes: p.notes,
+      notesTruncated: false,
       sources: contextSources,
       omittedSources: selected.length - contextSources.length,
       notice:
         "Extraits limités à 6 000 caractères par cours. Le document complet peut ne pas être présent.",
     });
     try {
+      if (context.length > 45000) throw new Error("Ce dossier dépasse la taille disponible pour une modification depuis le chat. Utilise le studio documentaire ou réduis la sélection.");
       const r = await fetch("/api/hermes/runs", {
         method: "POST",
         headers: {
@@ -399,6 +404,7 @@ export default function Home() {
       if (!r.ok) throw new Error(d.error || "Lancement impossible.");
       updateProject(p.id, (v) => ({
         ...v,
+        activeRunBase: { notes: p.notes, document: JSON.stringify(p.document ?? null) },
         activeRun: d.run_id,
         activeRunMessageId: messageId,
       }));
@@ -1213,6 +1219,23 @@ export default function Home() {
                       {m.role === "assistant" && <Sparkles size={11} />}
                     </div>
                     <div className="message-body">{m.content}</div>
+                    {m.change && <section className="change-review">
+                      <strong>{m.change.summary}</strong>
+                      {m.change.notes !== undefined && <details><summary>Notes : avant / après</summary><h4>Avant</h4><pre>{m.change.baseNotes || "Notes vides"}</pre><h4>Après</h4><pre>{m.change.notes}</pre></details>}
+                      {m.change.document && <details><summary>Document : avant / après</summary><h4>Avant</h4><pre>{m.change.baseDocument === "null" ? "Document vide" : textOf(JSON.parse(m.change.baseDocument).content)}</pre><h4>Après</h4><pre>{m.change.document.title + "\n\n" + textOf(m.change.document.content)}</pre></details>}
+                      {m.change.state === "pending" ? <div className="actions">
+                        <button className="primary-button" onClick={() => updateProject(project.id, p => {
+                          const change = p.messages.find(x => x.id === m.id)?.change;
+                          if (!change || change.state !== "pending") return p;
+                          if ((change.notes !== undefined && p.notes !== change.baseNotes) || (change.document && JSON.stringify(p.document ?? null) !== change.baseDocument)) {
+                            setChatError("Le dossier a changé depuis cette proposition. Demande une nouvelle proposition pour conserver tes modifications."); return p;
+                          }
+                          return { ...p, ...(change.notes !== undefined ? { notes: change.notes } : {}), ...(change.document ? { previousDocument: p.document, document: change.document } : {}), messages: p.messages.map(x => x.id === m.id ? { ...x, change: { ...change, state: "accepted" } } : x) };
+                        })}>Valider les changements</button>
+                        <button className="text-button" onClick={() => updateProject(project.id, p => ({ ...p, messages: p.messages.map(x => x.id === m.id && x.change ? { ...x, change: { ...x.change, state: "rejected" } } : x) }))}>Refuser</button>
+                      </div> : <p>{m.change.state === "accepted" ? "Changements appliqués" : "Proposition refusée"}</p>}
+                    </section>}
+
                   </div>
                 ))
               )}
@@ -1250,6 +1273,7 @@ export default function Home() {
               )}
               <div ref={chatEnd} />
             </div>
+            <Monitoring accessKey={accessKey} />
             <div className="composer-area">
               <button
                 className="corpus-pill"
