@@ -1,3 +1,4 @@
+import type { ResearchDocument, DocumentJob } from "./document/model";
 export type Source = {
   id: string;
   title: string;
@@ -33,6 +34,13 @@ export type Project = {
   notes: string;
   messages: Message[];
   sessionId: string;
+  document?: ResearchDocument;
+  documentProposal?: ResearchDocument;
+  previousDocument?: ResearchDocument;
+  documentJob?: DocumentJob;
+  documentOutline?: string[];
+  documentBrief?: string;
+  documentError?: string;
   activeRun?: string;
   activeRunMessageId?: string;
 };

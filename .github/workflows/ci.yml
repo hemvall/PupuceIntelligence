@@ -23,3 +23,7 @@ jobs:
       - run: npm run build
       - run: npm run typecheck
       - run: npm run test:mac-launcher
+      - if: runner.os == 'Linux'
+        run: npx playwright install --with-deps chromium --only-shell
+      - if: runner.os == 'Linux'
+        run: npm run test:e2e

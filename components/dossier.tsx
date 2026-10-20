@@ -54,7 +54,6 @@ export function Dossier({
         · fichier non modifié
       </div>
       <div className="dossier-intro">
-        <span className="eyebrow">DOSSIER DE TRAVAIL · 19 OCTOBRE 2026</span>
         <h2>La beauté après la chute</h2>
         <p>
           Une œuvre, ses modèles et ses réceptions. Ce dossier préparé distingue
@@ -62,7 +61,7 @@ export function Dossier({
           références encore à lire.
         </p>
         <button className="text-button" onClick={notes}>
-          Modifier les notes et le plan →
+          Ouvrir la version modifiable →
         </button>
       </div>
       <nav className="dossier-index" aria-label="Sommaire du dossier">
@@ -80,8 +79,8 @@ export function Dossier({
         <section className="study-section" id={"study-" + s.id} key={s.id}>
           <div className="study-number">0{i + 1}</div>
           <div>
-            <span className="study-status">{s.status}</span>
             <h2>{s.title}</h2>
+            <p className="study-provenance">{s.status}</p>
             {s.paragraphs.map((p) => (
               <p key={p}>{p}</p>
             ))}
@@ -171,8 +170,8 @@ const steps = [
   },
   {
     title: "Garder son propre travail",
-    text: "Les notes sont modifiables et enregistrées dans ce navigateur. « Exporter » produit un dossier Markdown ; les réglages permettent de sauvegarder l’ensemble en JSON.",
-    action: "Ouvrir mes notes",
+    text: "Les notes sont modifiables et enregistrées dans ce navigateur. « Mon document » permet de rédiger, d’ajouter des images et d’exporter en Word ou PDF. Les réglages sauvegardent l’ensemble en JSON.",
+    action: "Ouvrir mon document",
   },
 ];
 export function Guide({ act }: { act: (step: number) => void }) {
@@ -205,7 +204,6 @@ export function Guide({ act }: { act: (step: number) => void }) {
       </button>
       {open && (
         <div className="guide-body">
-          <span className="eyebrow">PRISE EN MAIN · {step + 1} / 4</span>
           <h3>{steps[step].title}</h3>
           <p>{steps[step].text}</p>
           <div>

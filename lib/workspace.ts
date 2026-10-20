@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { documentSchema, jobSchema } from "./document/model";
 const source = z.object({
   id: z.string(),
   title: z.string(),
@@ -29,6 +30,13 @@ const project = z.object({
   selected: z.array(z.string()),
   notes: z.string(),
   sessionId: z.string(),
+  document: documentSchema.optional(),
+  documentProposal: documentSchema.optional(),
+  previousDocument: documentSchema.optional(),
+  documentJob: jobSchema.optional(),
+  documentOutline: z.array(z.string().max(250)).max(16).optional(),
+  documentBrief: z.string().max(3000).optional(),
+  documentError: z.string().optional(),
   activeRun: z.string().optional(),
   activeRunMessageId: z.string().optional(),
   messages: z.array(

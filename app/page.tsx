@@ -28,11 +28,13 @@ import {
   X,
 } from "lucide-react";
 import type { Project, Source, Workspace } from "@/lib/types";
+import { DocumentStudio } from "@/components/document-studio";
+import { loadWorkspace, saveWorkspace } from "@/lib/workspace-store";
 import { Dossier, Guide } from "@/components/dossier";
 import { DOSSIER_ID, dossierSources, withDossier } from "@/lib/dossier";
 import { initialWorkspace } from "@/lib/seed";
 import { sourceLink, workspaceSchema } from "@/lib/workspace";
-const STORAGE = "pupuce-workspace-v1";
+
 const uid = () => crypto.randomUUID();
 function download(name: string, content: string, type = "text/plain") {
   const url = URL.createObjectURL(new Blob([content], { type }));
@@ -94,37 +96,54 @@ export default function Home() {
   const [assistantOpen, setAssistantOpen] = useState(false);
   const uploadRef = useRef<HTMLInputElement>(null);
   const chatEnd = useRef<HTMLDivElement>(null);
+  const saveSequence = useRef(0);
+  const [saving, setSaving] = useState(false);
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE);
-      if (raw) {
-        const parsed = workspaceSchema.safeParse(JSON.parse(raw));
-        if (parsed.success) {
+    let live = true;
+    void (async () => {
+      try {
+        const raw = await loadWorkspace();
+        if (!live) return;
+        if (raw) {
+          const parsed = workspaceSchema.safeParse(JSON.parse(raw));
+          if (!parsed.success) {
+            setSaveError(
+              "La sauvegarde existante est invalide. Elle n’a pas été écrasée. Restaure une sauvegarde depuis les réglages.",
+            );
+            return;
+          }
           setWorkspace(withDossier(parsed.data));
-          return;
-        }
-        setSaveError(
-          "La sauvegarde existante est invalide. Elle n’a pas été écrasée : exporte ou restaure ton dossier depuis les réglages.",
-        );
-        return;
+        } else setWorkspace(initialWorkspace());
+      } catch {
+        if (live)
+          setSaveError(
+            "Impossible de lire la sauvegarde locale. Vérifie les autorisations du navigateur.",
+          );
       }
-      setWorkspace(initialWorkspace());
-    } catch {
-      setSaveError(
-        "Impossible de lire la sauvegarde locale. Vérifie les autorisations de ton navigateur.",
-      );
-    }
+    })();
+    return () => {
+      live = false;
+    };
   }, []);
   useEffect(() => {
     if (!workspace) return;
-    try {
-      localStorage.setItem(STORAGE, JSON.stringify(workspace));
-      setSaveError("");
-    } catch {
-      setSaveError(
-        "La sauvegarde locale a échoué. Exporte ton dossier pour conserver ton travail.",
-      );
-    }
+    const sequence = ++saveSequence.current;
+    setSaving(true);
+    void saveWorkspace(JSON.stringify(workspace))
+      .then(() => {
+        if (sequence === saveSequence.current) {
+          setSaveError("");
+          setSaving(false);
+        }
+      })
+      .catch(() => {
+        if (sequence === saveSequence.current) {
+          setSaveError(
+            "La sauvegarde locale a échoué. Exporte une sauvegarde JSON pour conserver ton travail.",
+          );
+          setSaving(false);
+        }
+      });
   }, [workspace]);
   useEffect(() => {
     if (notice) {
@@ -259,7 +278,7 @@ export default function Home() {
     setSearching(false);
     setWorkspace((w) => (w ? { ...w, activeProject: id } : w));
     setArea("research");
-    setTab(id === DOSSIER_ID ? "dossier" : "explore");
+    setTab(id === DOSSIER_ID ? "dossier" : "document");
     setResultIds(null);
     setWarnings([]);
     setQuery("");
@@ -432,7 +451,7 @@ export default function Home() {
     setProjectName("");
     setModal(null);
     setArea("research");
-    setTab("explore");
+    setTab("document");
     setResultIds(null);
     setQuery("");
     setWarnings([]);
@@ -484,8 +503,8 @@ export default function Home() {
   async function restore(file?: File) {
     if (!file) return;
     try {
-      if (file.size > 15_000_000)
-        throw new Error("Fichier trop volumineux (15 Mo maximum).");
+      if (file.size > 60_000_000)
+        throw new Error("Fichier trop volumineux (60 Mo maximum).");
       const parsed = workspaceSchema.safeParse(JSON.parse(await file.text()));
       if (!parsed.success)
         throw new Error("Ce fichier n’est pas une sauvegarde Pupuce valide.");
@@ -571,16 +590,14 @@ export default function Home() {
             <Landmark size={27} strokeWidth={1.2} />
           </div>
           <div>
-            <strong>
-              Pupuce<span>®</span>
-            </strong>
-            <small>INTELLIGENCE</small>
+            <strong>Pupuce</strong>
+            <small>Atelier documentaire</small>
           </div>
         </a>
         <button className="new-project" onClick={() => setModal("project")}>
           <Plus size={15} /> Nouvelle recherche <span>↗</span>
         </button>
-        <div className="nav-label">DOCUMENTS</div>
+        <div className="nav-label">Documents</div>
         <nav aria-label="Navigation principale">
           {[
             { id: "research", label: "Recherches", icon: Search },
@@ -605,7 +622,7 @@ export default function Home() {
           ))}
         </nav>
         <div className="nav-label folder-label">
-          MES DOSSIERS{" "}
+          Mes dossiers{" "}
           <button
             className="icon-button"
             aria-label="Créer un dossier"
@@ -667,7 +684,9 @@ export default function Home() {
               <span className={saveError ? "error-dot" : "saved-dot"} />
               {saveError
                 ? "Sauvegarde à vérifier"
-                : "Enregistré sur cet appareil"}
+                : saving
+                  ? "Enregistrement…"
+                  : "Enregistré sur cet appareil"}
             </span>
             <button
               className="icon-button"
@@ -703,14 +722,6 @@ export default function Home() {
           <main className="research-main">
             <div className="project-heading">
               <div>
-                <div className="eyebrow">
-                  <span />{" "}
-                  {area === "research"
-                    ? project.subtitle
-                    : area === "library"
-                      ? "Votre collection documentaire"
-                      : "Apprendre, comprendre, retenir"}
-                </div>
                 <h1>
                   {area === "research"
                     ? project.title
@@ -729,7 +740,10 @@ export default function Home() {
               </div>
               <button
                 className="secondary export-button"
-                onClick={exportProject}
+                onClick={() => {
+                  setArea("research");
+                  setTab("document");
+                }}
               >
                 <ArrowDownToLine size={14} />
                 <span>Exporter</span>
@@ -747,8 +761,15 @@ export default function Home() {
                 aria-label="Étapes de recherche"
               >
                 {[
+                  { id: "document", label: "Mon document", icon: FileText },
                   ...(project.id === DOSSIER_ID
-                    ? [{ id: "dossier", label: "Dossier", icon: BookOpen }]
+                    ? [
+                        {
+                          id: "dossier",
+                          label: "Lire l’exemple",
+                          icon: BookOpen,
+                        },
+                      ]
                     : []),
                   { id: "explore", label: "Rechercher", icon: Search },
                   { id: "selection", label: "Ma sélection", icon: Bookmark },
@@ -782,16 +803,24 @@ export default function Home() {
                       "Compare les sources sélectionnées sur L’Ange déchu. Distingue les faits documentés, les interprétations et les références non lues. Cite les documents utilisés.",
                     );
                   }
-                  if (step === 3) setTab("notes");
+                  if (step === 3) setTab("document");
                 }}
               />
             )}
-            {tab === "dossier" &&
-            project.id === DOSSIER_ID &&
-            area === "research" ? (
+            {tab === "document" && area === "research" ? (
+              <DocumentStudio
+                key={project.id}
+                project={project}
+                sources={selected}
+                accessKey={accessKey}
+                update={(fn) => updateProject(project.id, fn)}
+              />
+            ) : tab === "dossier" &&
+              project.id === DOSSIER_ID &&
+              area === "research" ? (
               <Dossier
                 inspect={setDetail}
-                notes={() => setTab("notes")}
+                notes={() => setTab("document")}
                 prepare={(prompt) => {
                   setDraft(prompt);
                   setAssistantOpen(true);
@@ -822,9 +851,9 @@ export default function Home() {
                   }
                 />
                 <div className="notes-footer">
-                  <span>
-                    <Check size={12} /> Sauvegarde locale automatique
-                  </span>
+                  <button className="text-button" onClick={exportProject}>
+                    <ArrowDownToLine size={12} /> Exporter les notes Markdown
+                  </button>
                   <button
                     className="text-button"
                     onClick={() => {
@@ -1316,9 +1345,7 @@ export default function Home() {
             {detail.image && (
               <Picture source={detail} className="detail-image" />
             )}
-            <div className="eyebrow">
-              {detail.kind} · {detail.institution}
-            </div>
+
             <h2 id="source-title">{detail.title}</h2>
             <p>
               {detail.creator}
@@ -1394,7 +1421,6 @@ export default function Home() {
             >
               <X size={19} />
             </button>
-            <div className="eyebrow">PUPUCE INTELLIGENCE</div>
             <h2 id="modal-title">
               {modal === "project"
                 ? "Une nouvelle recherche."

@@ -28,7 +28,13 @@ Le profil Hermes est isolé dans `~/Library/Application Support/PupuceIntelligen
 - **Configurer-IA.command** arrête les services et permet de changer le fournisseur/modèle. Relancer ensuite Pupuce.
 - **Diagnostic-Pupuce.command** indique l’état des services et propose un test réel de réponse. Il n’affiche pas les clés.
 
-Toujours utiliser **http://127.0.0.1:3210**, avec le même navigateur et sans navigation privée. `localhost`, l’autre adresse Vercel et les autres navigateurs ont chacun leur stockage distinct. Les dossiers restent dans le stockage du navigateur : **exporter régulièrement la sauvegarde JSON depuis les réglages**. Si elle a déjà travaillé sur Vercel, exporter sa sauvegarde là-bas puis la restaurer localement (la restauration remplace l’atelier local).
+Toujours utiliser **http://127.0.0.1:3210**, avec le même navigateur et sans navigation privée. `localhost`, l’autre adresse Vercel et les autres navigateurs ont chacun leur stockage distinct. Les dossiers et leurs images restent dans IndexedDB dans le navigateur : **exporter régulièrement la sauvegarde JSON depuis les réglages**. Si elle a déjà travaillé sur Vercel, exporter sa sauvegarde là-bas puis la restaurer localement (la restauration remplace l’atelier local).
+
+## Rédiger et exporter
+
+Dans **Mon document**, ouvrir **Structure et rédaction**, ajuster le plan puis choisir **Rédiger le dossier complet**. Hermes propose un brouillon à relire ; cliquer sur **Adopter** ou **Remplacer mon document** pour l’ouvrir dans l’éditeur. Les illustrations accessibles du corpus sont incorporées ; d’autres peuvent être ajoutées avec **Image**. Les boutons **Word** et **PDF** exportent le contenu actuel avec les images.
+
+L’exemple Cabanel est modifiable sans appel IA via **Partir du dossier Cabanel**. La version précédente d’un document remplacé peut être rétablie. L’export JSON des réglages inclut désormais les documents et les images.
 
 ## Dépannage
 

@@ -1,10 +1,47 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Libre+Caslon+Display&display=swap");
+@font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/garamond-regular.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/garamond-italic.woff") format("woff");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/garamond-semibold.woff") format("woff");
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("/fonts/source-sans-regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("/fonts/source-sans-semibold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 550 800;
+  font-display: swap;
+}
 * {
   box-sizing: border-box;
 }
 body {
   margin: 0;
-  font-family: "DM Sans", Arial, sans-serif;
+  font-family:
+    "Source Sans 3",
+    -apple-system,
+    sans-serif;
   font-size: 13px;
   color: #28251f;
   background: #f2efe9;
@@ -148,7 +185,7 @@ p {
   border-bottom: 1px solid var(--accent);
 }
 .brand strong {
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 25px;
   font-weight: 400;
   letter-spacing: -1px;
@@ -156,12 +193,12 @@ p {
 }
 .brand strong span {
   font-family: Arial;
-  font-size: 9px;
+  font-size: 12px;
   vertical-align: top;
   padding-left: 4px;
 }
 .brand small {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 2.3px;
   display: block;
   margin-top: 5px;
@@ -175,7 +212,7 @@ button.new-project {
   padding: 11px 10px;
   border: 1px solid #b5a99b;
   background: transparent;
-  font-size: 11px;
+  font-size: 13px;
   margin-bottom: 30px;
   border-radius: 5px;
 }
@@ -188,7 +225,7 @@ button.new-project {
 }
 .nav-label {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 1.2px;
   padding: 0 10px 9px;
   font-weight: 550;
@@ -208,7 +245,7 @@ button.new-project {
   background: transparent;
   text-align: left;
   padding: 10px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   min-height: 36px;
 }
@@ -226,7 +263,7 @@ button.new-project {
 }
 .nav-count {
   margin-left: auto;
-  font-size: 10px;
+  font-size: 12px;
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 0 5px;
@@ -256,7 +293,7 @@ button.new-project {
   color: var(--ink);
 }
 .sidebar nav.folders > button {
-  font-size: 11px;
+  font-size: 13px;
   gap: 8px;
   padding: 9px;
 }
@@ -313,14 +350,14 @@ button.new-project {
   gap: 9px;
   width: 100%;
   text-align: left;
-  font-size: 11px;
+  font-size: 13px;
 }
 .avatar {
   border: 1px solid #b9a795;
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   display: grid;
   place-items: center;
   font-size: 18px;
@@ -329,7 +366,7 @@ button.new-project {
 }
 .account small {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   margin-top: 3px;
 }
@@ -354,7 +391,7 @@ button.new-project {
   justify-content: space-between;
   align-items: center;
   padding: 0 25px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
 }
 .topbar > div {
@@ -369,7 +406,7 @@ button.new-project {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 9px;
+  font-size: 12px;
 }
 .error-dot {
   width: 5px;
@@ -399,7 +436,7 @@ button.new-project {
   margin-bottom: 26px;
 }
 .eyebrow {
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 550;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -415,7 +452,7 @@ button.new-project {
   border-radius: 50%;
 }
 h1 {
-  font-family: "Libre Caslon Display", Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-weight: 400;
   font-size: 43px;
   line-height: 1.12;
@@ -426,7 +463,7 @@ h1 {
   color: var(--accent);
 }
 .project-heading p {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   line-height: 1.6;
 }
@@ -439,7 +476,7 @@ h1 {
   border-radius: 5px;
   min-height: 34px;
   padding: 8px 12px;
-  font-size: 11px;
+  font-size: 13px;
   white-space: nowrap;
 }
 .primary {
@@ -458,7 +495,7 @@ h1 {
   background: var(--hover);
 }
 .export-button {
-  font-size: 10px;
+  font-size: 12px;
   align-self: flex-end;
   margin-bottom: 4px;
 }
@@ -472,7 +509,7 @@ h1 {
   border: 0;
   border-bottom: 2px solid transparent;
   background: transparent;
-  font-size: 11px;
+  font-size: 13px;
   display: flex;
   gap: 7px;
   align-items: center;
@@ -484,7 +521,7 @@ h1 {
   color: var(--accent);
 }
 .tabs > button > span {
-  font-size: 9px;
+  font-size: 12px;
   background: var(--hover);
   padding: 1px 5px;
   border-radius: 3px;
@@ -511,7 +548,7 @@ h1 {
   flex: 1;
   min-width: 0;
   color: var(--ink);
-  font-size: 12px;
+  font-size: 14px;
   height: 32px;
 }
 .search-form input:focus {
@@ -524,7 +561,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   padding: 9px 0 0;
 }
@@ -535,7 +572,7 @@ h1 {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
 }
 .text-button:hover {
@@ -558,7 +595,7 @@ h1 {
   background: transparent;
   color: var(--muted);
   border-radius: 4px;
-  font-size: 10px;
+  font-size: 12px;
   padding: 5px 9px;
 }
 .chips > button:hover {
@@ -570,7 +607,7 @@ h1 {
   color: var(--ink);
 }
 .micro {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.7;
 }
@@ -628,7 +665,7 @@ h1 {
   color: var(--accent);
 }
 .exhibition h2 {
-  font-family: "Libre Caslon Display", Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-weight: 400;
   font-size: 29px;
   line-height: 1.03;
@@ -636,14 +673,14 @@ h1 {
   margin: 11px 0 9px;
 }
 .exhibition-copy p {
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.7;
   color: var(--muted);
 }
 .exhibition-copy .text-button {
   margin-top: 13px;
   color: var(--accent);
-  font-size: 9px;
+  font-size: 12px;
 }
 .exhibition-credit {
   position: absolute;
@@ -663,7 +700,7 @@ h1 {
   gap: 12px;
 }
 .section-heading h2 {
-  font-family: "Libre Caslon Display", Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 24px;
   font-weight: 400;
   letter-spacing: -0.4px;
@@ -712,7 +749,7 @@ h1 {
   flex-direction: column;
   gap: 12px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   background: var(--sidebar);
 }
 .bookmark {
@@ -738,8 +775,8 @@ h1 {
   position: absolute;
   bottom: 8px;
   left: 9px;
-  font-family: Georgia, serif;
-  font-size: 10px;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 12px;
   color: var(--muted);
 }
 .card-title {
@@ -747,7 +784,7 @@ h1 {
   border: 0;
   background: none;
   padding: 0;
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 13px;
   line-height: 1.45;
   display: -webkit-box;
@@ -759,7 +796,7 @@ h1 {
   color: var(--accent);
 }
 .art-card > p {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.5;
   margin: 5px 0 9px;
@@ -768,7 +805,7 @@ h1 {
   white-space: nowrap;
 }
 .card-meta {
-  font-size: 8px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -837,7 +874,7 @@ h1 {
   background: none;
   padding: 0;
   text-align: left;
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 13px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -848,7 +885,7 @@ h1 {
   color: var(--accent);
 }
 .document-content > p {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
@@ -867,7 +904,7 @@ h1 {
   align-items: center;
   gap: 8px;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 12px;
   flex-wrap: wrap;
 }
 .main-footer > span:last-child {
@@ -902,12 +939,12 @@ h1 {
   color: var(--accent);
 }
 .assistant-header h2 {
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 14px;
   font-weight: 400;
 }
 .assistant-header span {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   display: block;
   margin-top: 4px;
@@ -919,7 +956,7 @@ h1 {
   margin: 0 20px;
   border-bottom: 1px solid var(--line);
   padding-bottom: 14px;
-  font-size: 8px;
+  font-size: 12px;
   color: var(--muted);
 }
 .assistant-context > span:first-of-type {
@@ -972,7 +1009,7 @@ h1 {
   letter-spacing: 1.4px;
 }
 .assistant-welcome h3 {
-  font-family: "Libre Caslon Display", Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 35px;
   font-weight: 400;
   letter-spacing: -0.7px;
@@ -980,7 +1017,7 @@ h1 {
   margin: 12px 0;
 }
 .assistant-welcome > p {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.85;
   color: var(--muted);
   max-width: 250px;
@@ -998,7 +1035,7 @@ h1 {
   min-height: 37px;
   text-align: left;
   padding: 9px 10px;
-  font-size: 9px;
+  font-size: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1016,7 +1053,7 @@ h1 {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.7;
   margin-top: 23px;
   color: var(--muted);
@@ -1035,7 +1072,7 @@ h1 {
   gap: 6px;
   background: transparent;
   border: 0;
-  font-size: 9px;
+  font-size: 12px;
   color: var(--muted);
   padding: 0 4px 11px;
   width: 100%;
@@ -1062,7 +1099,7 @@ h1 {
   height: 44px;
   background: transparent;
   color: var(--ink);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.7;
 }
 .composer textarea::placeholder {
@@ -1106,7 +1143,7 @@ h1 {
   margin-bottom: 8px;
 }
 .message-body {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.85;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -1121,13 +1158,13 @@ h1 {
   gap: 8px;
   align-items: center;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   margin: 16px 0;
 }
 .chat-error,
 .alert {
   padding: 12px;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.7;
   background: var(--accent-pale);
   border: 1px solid var(--line);
@@ -1149,13 +1186,13 @@ h1 {
   color: var(--muted);
 }
 .empty-state h2 {
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   color: var(--ink);
   font-weight: 400;
   font-size: 23px;
 }
 .empty-state p {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.9;
   max-width: 360px;
 }
@@ -1172,13 +1209,13 @@ h1 {
   border: 1px solid var(--line);
   margin-bottom: 20px;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: 13px;
 }
 .search-progress small {
   display: block;
   margin-top: 5px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 .notes-page {
   padding: 5px 0 20px;
@@ -1188,7 +1225,7 @@ h1 {
 }
 .muted {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.8;
 }
 .notes-editor {
@@ -1199,7 +1236,7 @@ h1 {
   border-radius: 4px;
   background: var(--bg);
   color: var(--ink);
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 15px;
   line-height: 2.2;
   padding: 23px;
@@ -1223,7 +1260,7 @@ h1 {
   display: flex;
   gap: 5px;
   align-items: center;
-  font-size: 8px;
+  font-size: 12px;
   color: var(--muted);
 }
 .revision-actions {
@@ -1265,7 +1302,7 @@ h1 {
   background: var(--paper);
 }
 .modal h2 {
-  font-family: "Libre Caslon Display", Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 34px;
   font-weight: 400;
   margin: 12px 0 22px;
@@ -1273,7 +1310,7 @@ h1 {
 }
 .modal label {
   display: block;
-  font-size: 11px;
+  font-size: 13px;
   margin: 20px 0 9px;
 }
 .modal input,
@@ -1284,7 +1321,7 @@ h1 {
   padding: 11px;
   background: var(--bg);
   color: var(--ink);
-  font-size: 12px;
+  font-size: 14px;
 }
 .modal textarea {
   resize: vertical;
@@ -1303,12 +1340,12 @@ h1 {
   border-bottom: 1px solid var(--line);
 }
 .settings-content strong {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
 }
 .settings-content p {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
   margin-top: 6px;
 }
@@ -1333,16 +1370,16 @@ h1 {
   border-radius: 4px;
 }
 .source-detail > p {
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.9;
   color: var(--muted);
   margin: 9px 0;
 }
 .source-detail > p.micro {
-  font-size: 9px;
+  font-size: 12px;
 }
 .access-label {
-  font-size: 9px;
+  font-size: 12px;
   display: inline-flex;
   gap: 6px;
   align-items: center;
@@ -1384,7 +1421,7 @@ h1 {
   display: flex;
   gap: 9px;
   align-items: center;
-  font-size: 11px;
+  font-size: 13px;
   max-width: 90vw;
   animation: fade-in 0.2s;
 }
@@ -1471,10 +1508,10 @@ h1 {
     font-size: 40px;
   }
   .assistant-welcome > p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .prompt-list > button {
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 @media (max-width: 1200px) {
@@ -1549,7 +1586,7 @@ h1 {
     background: var(--accent);
     color: var(--paper);
     box-shadow: 0 4px 15px #0002;
-    font-size: 11px;
+    font-size: 13px;
     padding: 11px 15px;
   }
   .research-main {
@@ -1621,7 +1658,7 @@ h1 {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    font-size: 9px;
+    font-size: 12px;
   }
   .desk {
     height: calc(100dvh - 46px);
@@ -1637,7 +1674,7 @@ h1 {
     font-size: 34px;
   }
   .project-heading p {
-    font-size: 10px;
+    font-size: 12px;
   }
   .eyebrow {
     font-size: 7px;
@@ -1656,14 +1693,14 @@ h1 {
     gap: 22px;
   }
   .tabs > button {
-    font-size: 10px;
+    font-size: 12px;
     gap: 5px;
   }
   .search-form {
     padding-left: 10px;
   }
   .search-form input {
-    font-size: 10px;
+    font-size: 12px;
   }
   .search-form .primary {
     padding: 8px;
@@ -1675,7 +1712,7 @@ h1 {
     font-size: 7px;
   }
   .search-caption .text-button {
-    font-size: 8px;
+    font-size: 12px;
   }
   .filter-row {
     margin: 17px 0;
@@ -1685,7 +1722,7 @@ h1 {
   }
   .chips > button {
     padding: 5px 7px;
-    font-size: 9px;
+    font-size: 12px;
   }
   .result-count {
     font-size: 7px;
@@ -1719,10 +1756,10 @@ h1 {
     height: 175px;
   }
   .card-title {
-    font-size: 12px;
+    font-size: 14px;
   }
   .art-card > p {
-    font-size: 8px;
+    font-size: 12px;
   }
   .card-meta {
     font-size: 7px;
@@ -1739,10 +1776,10 @@ h1 {
     height: 47px;
   }
   .document-title {
-    font-size: 12px;
+    font-size: 14px;
   }
   .document-content > p {
-    font-size: 8px;
+    font-size: 12px;
   }
   .save-document {
     display: none !important;
@@ -1759,7 +1796,7 @@ h1 {
   }
   .assistant-toggle {
     right: 15px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .modal {
     padding: 28px 21px;
@@ -1772,10 +1809,10 @@ h1 {
     font-size: 14px;
   }
   .notes-footer .text-button {
-    font-size: 9px;
+    font-size: 12px;
   }
   .setting-actions .secondary {
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1815,12 +1852,12 @@ h1 {
   letter-spacing: -0.035em;
 }
 .project-heading > div > p {
-  font-size: 12px;
+  font-size: 14px;
 }
 .eyebrow,
 .micro,
 .nav-label {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.07em;
 }
 .assistant-header h2 {
@@ -1859,11 +1896,11 @@ h1 {
   align-items: start;
   gap: 20px;
   padding: 13px 0 8px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.65;
 }
 .plate-credit {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.6;
 }
@@ -1878,7 +1915,7 @@ h1 {
   border-left: 2px solid var(--accent);
 }
 .dossier-intro h2 {
-  font-family: "Libre Caslon Display", Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-weight: 400;
   font-size: clamp(32px, 4vw, 48px);
   margin: 10px 0;
@@ -1899,7 +1936,7 @@ h1 {
 }
 .dossier-index a {
   padding: 9px 0;
-  font-size: 12px;
+  font-size: 14px;
   display: flex;
   gap: 12px;
 }
@@ -1909,7 +1946,7 @@ h1 {
 .dossier-index span,
 .study-number {
   color: var(--muted);
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
 }
 .study-section {
   display: grid;
@@ -1924,13 +1961,13 @@ h1 {
   padding-top: 27px;
 }
 .study-status {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   letter-spacing: 0.02em;
 }
 .study-section h2,
 .study-bibliography h2 {
-  font-family: "Libre Caslon Display", Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-weight: 400;
   font-size: 30px;
   line-height: 1.15;
@@ -1947,7 +1984,7 @@ h1 {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 7px;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .study-refs button {
@@ -1974,7 +2011,7 @@ h1 {
 }
 .bibliography-entry > span {
   color: var(--muted);
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
 }
 .bibliography-entry button {
   font-weight: 600;
@@ -1986,11 +2023,11 @@ h1 {
 }
 .bibliography-entry p {
   margin: 7px 0;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.75;
 }
 .bibliography-entry a {
-  font-size: 11px;
+  font-size: 13px;
 }
 .dossier-next {
   padding: 24px;
@@ -1999,7 +2036,7 @@ h1 {
   background-size: 4px 4px;
 }
 .dossier-next h3 {
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 20px;
   font-weight: 400;
 }
@@ -2019,14 +2056,14 @@ h1 {
   border: none;
   text-align: left;
   padding: 12px 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 .guide-body {
   border-top: 1px solid var(--line);
   padding: 20px 0;
 }
 .guide-body h3 {
-  font-family: Georgia, serif;
+  font-family: "EB Garamond", Georgia, serif;
   font-size: 22px;
   font-weight: 400;
   margin: 10px 0;
@@ -2076,5 +2113,634 @@ h1 {
   }
 }
 /* Grain belongs to the paper, never to the documentary reproductions. */
-.app::after { display: none; }
-.research-main, .sidebar { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23877c68' opacity='.035' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }
+.app::after {
+  display: none;
+}
+.research-main,
+.sidebar {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23877c68' opacity='.035' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
+}
+/* A quiet reading desk: locally bundled type, generous text, restrained motion. */
+body {
+  font-family:
+    "Source Sans 3",
+    -apple-system,
+    sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.eyebrow {
+  display: none;
+}
+.project-heading {
+  margin-bottom: 22px;
+  align-items: flex-end;
+}
+.project-heading h1 {
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(36px, 3.3vw, 50px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  margin: 0 0 10px;
+}
+.project-heading > div > p {
+  font-size: 15px;
+}
+.sidebar {
+  width: 218px;
+  flex-basis: 218px;
+}
+.nav-item,
+.project-item {
+  font-size: 14px;
+}
+.primary,
+.secondary {
+  font-size: 14px;
+  min-height: 37px;
+  padding: 8px 13px;
+  border-radius: 5px;
+}
+.tabs button {
+  font-size: 14px;
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+.brand {
+  margin-bottom: 30px;
+}
+.brand strong {
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 29px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.brand small {
+  font-family: "Source Sans 3", sans-serif;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  text-transform: none;
+}
+.study-section p,
+.dossier-intro > p {
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 21px;
+  line-height: 1.55;
+}
+.study-section h2 {
+  font-size: 31px;
+  letter-spacing: -0.015em;
+}
+.study-section .study-provenance {
+  font-family: "Source Sans 3", sans-serif;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 8px 0 20px;
+}
+.dossier-intro h2 {
+  font-size: 38px;
+}
+.study-section {
+  scroll-margin-top: 28px;
+}
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+.document-studio {
+  padding: 20px 0 0;
+}
+.studio-actions,
+.studio-actions > div,
+.document-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.studio-actions {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.studio-actions > div {
+  flex-wrap: wrap;
+}
+.studio-actions .secondary.active {
+  background: var(--accent-pale);
+  border-color: var(--accent);
+}
+.writing-plan {
+  border-block: 1px solid var(--line);
+  padding: 25px 0;
+  margin-bottom: 28px;
+  display: grid;
+  grid-template-columns: 0.95fr 1.1fr;
+  gap: 25px;
+  animation: paper-arrive 0.32s ease both;
+}
+.plan-intro h2 {
+  font:
+    400 29px/1.1 "EB Garamond",
+    Georgia,
+    serif;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+.plan-intro p {
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 14px;
+}
+.plan-intro label {
+  display: block;
+  margin-top: 22px;
+  font-size: 14px;
+}
+.plan-intro textarea {
+  margin-top: 7px;
+  display: block;
+  width: 100%;
+  resize: vertical;
+  min-height: 100px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 4px;
+  padding: 10px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.plan-intro .plan-corpus {
+  font-size: 12px;
+  margin-top: 12px;
+}
+.plan-part {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  min-height: 45px;
+}
+.plan-part > span {
+  color: var(--muted);
+  font:
+    400 18px "EB Garamond",
+    Georgia,
+    serif;
+  min-width: 27px;
+}
+.plan-part input {
+  min-width: 0;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  padding: 9px 0;
+  font-size: 14px;
+}
+.plan-part .icon-button {
+  flex-shrink: 0;
+  width: 24px;
+  height: 26px;
+}
+.plan-parts > .text-button {
+  margin-top: 14px;
+}
+.plan-submit {
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.plan-submit > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.writing-progress {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 0;
+  border-block: 1px solid var(--line);
+  margin: 0 0 20px;
+}
+.writing-progress > svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.writing-progress strong {
+  font-weight: 600;
+  font-size: 15px;
+}
+.writing-progress p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.writing-progress > .text-button {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.proposal-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  background: var(--accent-pale);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+.proposal-bar > div {
+  flex: 1;
+  min-width: 190px;
+}
+.proposal-bar p {
+  margin-top: 5px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.manuscript-layout {
+  display: grid;
+  grid-template-columns: 155px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.manuscript-index {
+  position: sticky;
+  top: 15px;
+  max-height: 65vh;
+  overflow: auto;
+  padding: 12px 0;
+  scrollbar-width: thin;
+}
+.manuscript-index > strong {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 13px;
+}
+.manuscript-index button {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  text-align: left;
+  width: 100%;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--line);
+  padding: 9px 0 9px 11px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.manuscript-index button:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+  background: var(--hover);
+}
+.manuscript-index button > span {
+  font:
+    400 16px "EB Garamond",
+    Georgia,
+    serif;
+  opacity: 0.7;
+}
+.manuscript-main {
+  min-width: 0;
+}
+.editor-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 5px 5px 0 0;
+  background: var(--paper);
+  box-shadow: 0 3px 10px #201b1205;
+}
+.editor-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 3px;
+  width: 29px;
+  height: 30px;
+  color: var(--ink);
+}
+.editor-toolbar button:hover,
+.editor-toolbar button.active {
+  background: var(--accent-pale);
+  color: var(--accent);
+}
+.editor-toolbar select {
+  font: inherit;
+  font-size: 13px;
+  max-width: 90px;
+  border: none;
+  color: var(--ink);
+  background: transparent;
+  padding: 6px 0;
+}
+.editor-toolbar button.image-tool {
+  width: auto;
+  padding: 0 7px;
+  gap: 5px;
+  font-size: 13px;
+}
+.tool-divider {
+  height: 19px;
+  width: 1px;
+  background: var(--line);
+  margin: 0 3px;
+}
+.toolbar-space {
+  flex: 1;
+}
+.editor-insert {
+  padding: 17px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-top: none;
+  background: var(--paper);
+  animation: paper-arrive 0.2s ease both;
+}
+.editor-insert > label {
+  flex: 1;
+  min-width: 150px;
+  font-size: 13px;
+}
+.editor-insert input {
+  display: block;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 9px;
+  background: var(--bg);
+  width: 100%;
+  margin-top: 6px;
+}
+.editor-insert > p {
+  width: 100%;
+  font-size: 12px;
+  color: var(--muted);
+}
+.source-images {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.source-images button {
+  width: 110px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  text-align: left;
+  padding: 6px;
+  font-size: 12px;
+}
+.source-images img {
+  width: 100%;
+  height: 65px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 5px;
+}
+.manuscript-paper {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: none;
+  box-shadow: 0 5px 30px #211b1110;
+  padding: clamp(25px, 4vw, 60px);
+  min-height: 830px;
+  margin-bottom: 15px;
+}
+.manuscript-title,
+.manuscript-paper > h1 {
+  display: block;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--ink);
+  font:
+    400 clamp(29px, 2.7vw, 39px)/1.1 "EB Garamond",
+    Georgia,
+    serif;
+  letter-spacing: -0.025em;
+  width: 100%;
+  margin: 0 0 35px;
+  padding: 0;
+  text-overflow: ellipsis;
+}
+.manuscript-paper > h1 {
+  white-space: normal;
+}
+.tiptap {
+  outline: none;
+  font:
+    400 20px/1.6 "EB Garamond",
+    Georgia,
+    serif;
+  color: var(--ink);
+  min-height: 600px;
+  overflow-wrap: anywhere;
+}
+.tiptap > * + * {
+  margin-top: 15px;
+}
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  font-family: "EB Garamond", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin: 33px 0 14px;
+}
+.tiptap h1 {
+  font-size: 28px;
+}
+.tiptap h2 {
+  font-size: 24px;
+}
+.tiptap h3 {
+  font-size: 21px;
+}
+.tiptap > :first-child {
+  margin-top: 0;
+}
+.tiptap ul,
+.tiptap ol {
+  padding-left: 26px;
+}
+.tiptap li > p {
+  margin: 0;
+}
+.tiptap blockquote {
+  padding-left: 20px;
+  border-left: 2px solid var(--line);
+  margin-left: 0;
+  color: var(--muted);
+}
+.tiptap img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 560px;
+  display: block;
+  margin: 24px auto 12px;
+  border: 2px solid transparent;
+}
+.tiptap img.ProseMirror-selectednode {
+  border-color: var(--accent);
+}
+.tiptap img + p {
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.tiptap a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--accent);
+}
+.tiptap p.is-editor-empty:first-child:before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--muted);
+  pointer-events: none;
+  height: 0;
+}
+.document-foot {
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 12px;
+  padding-bottom: 15px;
+  flex-wrap: wrap;
+}
+.editor-loading {
+  min-height: 500px;
+  padding: 35px;
+  color: var(--muted);
+}
+@keyframes paper-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.document-studio,
+.study-dossier,
+.notes-page,
+.results-section,
+.modal,
+.guide-body {
+  animation: paper-arrive 0.38s cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+button,
+a,
+input,
+textarea {
+  transition:
+    background-color 0.22s ease,
+    color 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+.art-card img,
+.source-images img {
+  transition: transform 0.6s cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+@media (min-width: 1450px) {
+  .manuscript-layout {
+    grid-template-columns: 170px minmax(0, 1fr);
+  }
+}
+@media (max-width: 1250px) {
+  .manuscript-index {
+    display: none;
+  }
+  .manuscript-layout {
+    display: block;
+  }
+  .manuscript-paper {
+    padding: 35px;
+  }
+}
+@media (max-width: 800px) {
+  .writing-plan {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .manuscript-paper {
+    padding: 25px 22px;
+  }
+  .document-foot {
+    gap: 5px;
+  }
+}
+@media (max-width: 650px) {
+  .sidebar {
+    width: 235px;
+  }
+  .studio-actions {
+    gap: 12px;
+  }
+  .editor-toolbar {
+    top: 0;
+  }
+  .tool-divider {
+    margin-inline: 1px;
+  }
+  .writing-progress {
+    flex-wrap: wrap;
+  }
+  .tiptap {
+    font-size: 19px;
+  }
+  .tabs button {
+    font-size: 13px;
+    padding-inline: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *:before,
+  *:after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+.nav-label {
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+.brand small {
+  letter-spacing: 0;
+  font-size: 12px;
+  text-transform: none;
+  margin-top: 3px;
+}
