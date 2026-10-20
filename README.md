@@ -31,9 +31,11 @@ flowchart TD
 
 Structure compacte inspirée des références fournies ; langage visuel Renaissance et néoclassicisme : papier ivoire, encre, bordeaux, titres à empattements, grain et trame décorative. Texte et reproductions documentaires restent nets.
 
-## État initial
+## Utilisation sur Mac
 
-Le README décrit l’architecture cible. Le code du premier MVP arrive sur une branche dédiée. Le périmètre effectivement disponible et ses limites sont documentés avec cette implémentation.
+Pour installer Pupuce et Hermes localement avec un modèle via API : **[guide Mac prêt à suivre](INSTALLATION-MAC.md)**.
+
+Lancer `Installer-Pupuce.command` une première fois. L’assistant configure le fournisseur API et crée quatre raccourcis sur le Bureau : ouvrir, arrêter, configurer l’IA et diagnostiquer. Le lancement quotidien démarre les deux services en local et ouvre le navigateur sans code à recopier. Aucun hébergement externe n’est nécessaire.
 
 ## Premier MVP disponible
 
