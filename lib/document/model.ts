@@ -280,7 +280,7 @@ export function generationRequest(
       rights,
       image,
     };
-    const item = { ...meta, text: s.text?.slice(0, 6000) };
+    const item = { ...meta, text: s.text?.slice(0, 6000), extraction: s.attachment?.extraction, fileNotice: s.attachment?.warning };
     if (size + JSON.stringify(item).length > 23500) break;
     snapshot.push(meta);
     contextSources.push(item);

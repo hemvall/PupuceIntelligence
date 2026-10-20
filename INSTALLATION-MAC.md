@@ -12,7 +12,7 @@ Pupuce et Hermes tournent sur le Mac. Le modèle est appelé via le fournisseur 
 
 1. Télécharger le dépôt depuis GitHub : **Code → Download ZIP**, décompresser puis ouvrir le dossier. Ou utiliser `git clone https://github.com/hemvall/PupuceIntelligence.git`.
 2. Ouvrir **Installer-Pupuce.command**. Si Finder ne l’exécute pas, ouvrir Terminal, taper `bash ` (avec un espace), glisser le fichier dans Terminal puis appuyer sur Entrée. Si macOS bloque l’ouverture d’un fichier téléchargé, utiliser son action **Ouvrir** / les réglages de confidentialité après avoir vérifié son origine. Ne pas désactiver Gatekeeper.
-3. L’installation utilise une copie durable dans `~/Library/Application Support/PupuceIntelligence/app`. Le dossier téléchargé pourra ensuite être supprimé. Node 22 est installé dans ce même espace si nécessaire, sans sudo ni Homebrew. L’archive est vérifiée avec la somme SHA-256 publiée par Node.
+3. L’installation utilise une copie durable dans `~/Library/Application Support/PupuceIntelligence/app`. Le dossier téléchargé pourra ensuite être supprimé. Node 22 (au minimum 22.13 pour la lecture PDF) est installé dans ce même espace si nécessaire, sans sudo ni Homebrew. L’archive est vérifiée avec la somme SHA-256 publiée par Node.
 4. Si les outils de développement Apple sont absents, accepter leur installation et relancer le fichier une fois celle-ci terminée. Hermes a besoin de Git et peut avoir besoin d’un compilateur pour ses dépendances.
 5. Dans l’assistant **Hermes model**, choisir le fournisseur, le modèle puis renseigner la clé directement dans le Terminal. Elle n’est jamais demandée par GitHub ni intégrée au dépôt.
 6. Dans **Hermes tools**, configurer le jeu d’outils de la plateforme API Server pour la recherche documentaire. Activer les outils web souhaités ; certains demandent une clé de recherche supplémentaire. Ne pas activer les outils terminal ou de contrôle du Mac pour ce profil. La conversation à partir des documents sélectionnés fonctionne sans recherche web autonome. Les outils navigateur/contrôle du Mac ne sont pas installés par le bootstrap.
@@ -57,7 +57,7 @@ Pour supprimer l’installation : lancer Arrêter-Pupuce, puis supprimer les qua
 
 ## Périmètre et validation
 
-Cette installation active le pont IA existant. Elle n’ajoute pas l’import PDF/OCR, la synchronisation des dossiers ni l’enregistrement automatique des trouvailles Hermes dans la bibliothèque. Le dossier Cabanel reste un contenu éditorial préparé.
+Cette installation active le pont IA existant. Elle permet d’importer des PDF, Word .docx, images et fichiers texte dans les dossiers. Les originaux sont conservés ; le texte des PDF et Word est extrait localement. Les images et scans sans texte ne sont pas analysés automatiquement (pas d’OCR). La synchronisation entre appareils et l’enregistrement automatique des trouvailles Hermes dans la bibliothèque restent à ajouter. Le dossier Cabanel reste un contenu éditorial préparé.
 
 Les tests automatisés couvrent les restrictions de la session locale, les secrets générés/conservés et le pont Hermes avec un service simulé. Le test proposé sur le Mac valide la véritable génération API. Le lancement natif Finder et l’installation officielle de Hermes doivent être vérifiés sur le Mac cible ; ils ne sont pas simulés comme une validation réelle.
 

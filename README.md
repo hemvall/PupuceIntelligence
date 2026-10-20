@@ -136,3 +136,11 @@ Dans la conversation, demander une modification des notes ou du document produit
 ### Historique IA local
 
 Le panneau « Historique et consommation IA » de l’assistant affiche les prompts, réponses, états et modèle, ainsi que les tokens entrée/sortie transmis par Hermes. Une absence de métriques est affichée explicitement ; aucun comptage estimé n’est présenté comme réel. Le suivi couvre aussi les demandes du studio documentaire. Les requêtes acceptées par Hermes sont enregistrées dans `~/Library/Application Support/Pupuce Intelligence/monitoring` (un JSON par exécution, incluant le contexte envoyé). `PUPUCE_MONITORING_DIR` permet de choisir un autre dossier. Les fichiers restent sur la machine qui héberge l’application ; l’API de lecture utilise le même contrôle d’accès que l’assistant.
+
+### Importer des sources et documents
+
+À la création d’un dossier ou avec **Ajouter des documents**, sélectionner ou glisser plusieurs PDF, fichiers Word `.docx`, images JPG/PNG/WebP ou fichiers TXT UTF-8. Les fichiers sont préparés puis rattachés au dossier au clic sur **Créer le dossier** ou **Ajouter au dossier**. Annuler ferme l’import sans ajouter les fichiers. Le texte collé reste disponible.
+
+Les originaux sont inclus dans la sauvegarde de l’atelier (sur le Mac avec le lanceur local) et téléchargeables depuis la notice. Le texte des PDF est extrait avec les numéros de pages ; le Word conserve les paragraphes. L’extraction est locale au serveur Pupuce, sans appel IA. L’assistant reçoit uniquement les extraits sélectionnés et les limites d’extraction, jamais le fichier binaire. Les images, scans et PDF protégés sont conservés avec un message indiquant que leur contenu ne peut pas être lu automatiquement : il faut ajouter une description ou transcription. Les anciens `.doc` doivent être convertis en `.docx`.
+
+Limites : 8 Mo par fichier, 12 fichiers par ajout, 55 Mo pour l’atelier sérialisé (originaux encodés compris), extraction de 100 pages et 200 000 caractères maximum par document. Les limites de contexte IA existantes restent applicables. Sur un hébergement externe, une limite d’envoi plus basse peut être imposée par l’hébergeur ; l’installation locale Mac accepte les limites ci-dessus.

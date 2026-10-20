@@ -8,7 +8,7 @@ mkdir -p "$PUPUCE_DATA"
 chmod 700 "$PUPUCE_DATA"
 export PUPUCE_DATA
 export PATH="$PUPUCE_DATA/runtime/bin:$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
-if ! command -v node >/dev/null || ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 22 ? 0 : 1)'; then
+if ! command -v node >/dev/null || ! node -e 'const [major, minor] = process.versions.node.split(".").map(Number); process.exit(major >= 24 || (major === 22 && minor >= 13) ? 0 : 1)'; then
   echo 'Installation privée de Node.js 22 (sans sudo)…'
   PUPUCE_ARCH="$(uname -m)"
   case "$PUPUCE_ARCH" in arm64) ;; x86_64) PUPUCE_ARCH=x64 ;; *) echo 'Architecture non prise en charge'; exit 1 ;; esac
