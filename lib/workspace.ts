@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { attachmentSchema } from "./import-schema";
 import { documentSchema, jobSchema } from "./document/model";
 import { changeSchema } from "./assistant-changes";
 const source = z.object({
@@ -17,12 +18,14 @@ const source = z.object({
   access: z.enum([
     "Notice consultée",
     "Texte importé",
+    "Fichier importé",
     "Portail de recherche",
     "Page consultée",
     "Passage consulté",
   ]),
   retrievedAt: z.string(),
   text: z.string().optional(),
+  attachment: attachmentSchema.optional(),
 });
 const project = z.object({
   id: z.string(),

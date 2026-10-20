@@ -14,12 +14,14 @@ export type Source = {
   inventory?: string;
   access:
     | "Notice consultée"
+    | "Fichier importé"
     | "Texte importé"
     | "Portail de recherche"
     | "Page consultée"
     | "Passage consulté";
   retrievedAt: string;
   text?: string;
+  attachment?: import("./import-schema").Attachment;
 };
 export type Message = {
   id: string;

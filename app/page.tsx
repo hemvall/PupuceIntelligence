@@ -37,6 +37,8 @@ import { sourceLink, workspaceSchema } from "@/lib/workspace";
 
 import { textOf } from "@/lib/document/model";
 import { assistantResponse } from "@/lib/assistant-changes";
+import { SourceFiles, OriginalFile } from "@/components/source-files";
+import { MAX_WORKSPACE_CHARS } from "@/lib/import-schema";
 import { Monitoring } from "@/components/monitoring";
 const uid = () => crypto.randomUUID();
 function download(name: string, content: string, type = "text/plain") {
@@ -85,6 +87,10 @@ export default function Home() {
     null,
   );
   const [projectName, setProjectName] = useState("");
+  const [pendingFiles, setPendingFiles] = useState<Source[]>([]);
+  const [filesBusy, setFilesBusy] = useState(false);
+  const [importError, setImportError] = useState("");
+  useEffect(() => { setPendingFiles([]); setImportError(""); }, [modal]);
   const [courseTitle, setCourseTitle] = useState("");
   const [courseText, setCourseText] = useState("");
   const [draft, setDraft] = useState("");
@@ -177,7 +183,7 @@ export default function Home() {
       );
     focusable()[0]?.focus();
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && !filesBusy) {
         setModal(null);
         setDetail(null);
       }
@@ -199,7 +205,7 @@ export default function Home() {
       document.removeEventListener("keydown", onKey);
       previous?.focus();
     };
-  }, [modal, detail?.id]);
+  }, [modal, detail?.id, filesBusy]);
   const project = workspace?.projects.find(
     (p) => p.id === workspace.activeProject,
   );
@@ -366,6 +372,8 @@ export default function Home() {
         creator: s.creator,
         url: s.url,
         access: s.access,
+        extraction: s.attachment?.extraction,
+        fileNotice: s.attachment?.warning,
         text: s.text?.slice(0, 6000),
         description: s.description,
       };
@@ -434,7 +442,8 @@ export default function Home() {
   }
   function addProject(e: React.FormEvent) {
     e.preventDefault();
-    if (!projectName.trim()) return;
+    if (!projectName.trim() || filesBusy || !workspace) return;
+    if (JSON.stringify(workspace).length + JSON.stringify(pendingFiles).length > MAX_WORKSPACE_CHARS) { setImportError("Ces fichiers dépassent la capacité de l’atelier (55 Mo). Retire des fichiers avant de continuer."); return; }
     searchToken.current++;
     setSearching(false);
     const id = uid();
@@ -443,13 +452,14 @@ export default function Home() {
         ? {
             ...w,
             activeProject: id,
+            sources: [...w.sources, ...pendingFiles],
             projects: [
               ...w.projects,
               {
                 id,
                 title: projectName.trim(),
                 subtitle: "Dossier de recherche",
-                selected: [],
+                selected: pendingFiles.map(s => s.id),
                 notes: "",
                 messages: [],
                 sessionId: "pupuce-" + uid(),
@@ -461,7 +471,7 @@ export default function Home() {
     setProjectName("");
     setModal(null);
     setArea("research");
-    setTab("document");
+    setTab(pendingFiles.length ? "selection" : "document");
     setResultIds(null);
     setQuery("");
     setWarnings([]);
@@ -470,36 +480,18 @@ export default function Home() {
   }
   function importCourse(e: React.FormEvent) {
     e.preventDefault();
-    if (!project || !courseTitle.trim() || !courseText.trim()) return;
-    const id = "course-" + uid();
-    const source: Source = {
-      id,
-      title: courseTitle.trim(),
-      creator: "Document personnel",
-      date: new Date().getFullYear().toString(),
-      kind: "Cours",
-      institution: "Mes cours",
-      url: "",
-      description: courseText.trim().slice(0, 180),
-      text: courseText.trim(),
-      access: "Texte importé",
-      retrievedAt: new Date().toISOString(),
-    };
-    setWorkspace((w) =>
-      w
-        ? {
-            ...w,
-            sources: [...w.sources, source],
-            projects: w.projects.map((p) =>
-              p.id === project.id ? { ...p, selected: [...p.selected, id] } : p,
-            ),
-          }
-        : w,
-    );
-    setModal(null);
-    setCourseTitle("");
-    setCourseText("");
-    setNotice("Cours ajouté au dossier.");
+    if (!project || !workspace || filesBusy) return;
+    const sources = [...pendingFiles];
+    if (courseText.trim()) {
+      if (!courseTitle.trim()) { setImportError("Ajoute un titre au texte collé."); return; }
+      sources.push({ id: "course-" + uid(), title: courseTitle.trim(), creator: "Document personnel", date: new Date().getFullYear().toString(), kind: "Cours", institution: "Mes cours", url: "", description: courseText.trim().slice(0, 180), text: courseText.trim(), access: "Texte importé", retrievedAt: new Date().toISOString() });
+    }
+    if (!sources.length) { setImportError("Choisis des fichiers ou colle un texte."); return; }
+    if (JSON.stringify(workspace).length + JSON.stringify(sources).length > MAX_WORKSPACE_CHARS) { setImportError("Ces fichiers dépassent la capacité de l’atelier (55 Mo). Retire des fichiers avant de continuer."); return; }
+    setWorkspace(w => w ? { ...w, sources: [...w.sources, ...sources], projects: w.projects.map(p => p.id === project.id ? { ...p, selected: [...p.selected, ...sources.map(s => s.id)] } : p) } : w);
+    setModal(null); setCourseTitle(""); setCourseText("");
+    setArea("research"); setTab("selection"); setResultIds(null);
+    setNotice(`${sources.length} document${sources.length > 1 ? "s ajoutés" : " ajouté"} au dossier.`);
   }
   function exportProject() {
     if (!project || !workspace) return;
@@ -748,6 +740,7 @@ export default function Home() {
                       : "Importez un cours, puis préparez vos fiches avec l’assistant."}
                 </p>
               </div>
+              <button className="secondary" onClick={() => setModal("import")}><Plus size={15} /> Ajouter des documents</button>
               <button
                 className="secondary export-button"
                 onClick={() => {
@@ -909,7 +902,7 @@ export default function Home() {
                         className="text-button"
                         onClick={() => setModal("import")}
                       >
-                        <Plus size={12} /> Ajouter un cours
+                        <Plus size={12} /> Ajouter des documents
                       </button>
                     </div>
                   </>
@@ -972,7 +965,7 @@ export default function Home() {
                     </h2>
                     <p>
                       {area === "revisions"
-                        ? "Ajoutez le texte de votre cours pour le conserver et le travailler avec l’assistant."
+                        ? "Importez vos PDF, fichiers Word, images ou textes pour les conserver dans votre dossier."
                         : tab === "selection"
                           ? "Conservez les références utiles avec le marque-page. Vous pourrez ensuite les comparer et préparer votre oral."
                           : "Essayez un autre mot-clé, une variante en anglais, ou un autre type de document."}
@@ -1314,7 +1307,7 @@ export default function Home() {
                   <button
                     type="button"
                     className="icon-button"
-                    aria-label="Ajouter un cours au dossier"
+                    aria-label="Ajouter des documents au dossier"
                     onClick={() => setModal("import")}
                   >
                     <Plus size={17} />
@@ -1383,6 +1376,7 @@ export default function Home() {
               <Check size={13} />
               {detail.access}
             </div>
+            <OriginalFile source={detail} />
             <p className="detail-description">{detail.description}</p>
             {detail.inventory && (
               <p className="micro">Inventaire : {detail.inventory}</p>
@@ -1434,7 +1428,7 @@ export default function Home() {
         </div>
       )}
       {modal && (
-        <div className="modal-backdrop" onClick={() => setModal(null)}>
+        <div className="modal-backdrop" onClick={() => { if (!filesBusy) setModal(null); }}>
           <section
             className="modal"
             role="dialog"
@@ -1445,7 +1439,7 @@ export default function Home() {
             <button
               className="icon-button modal-close"
               aria-label="Fermer"
-              onClick={() => setModal(null)}
+              onClick={() => { if (!filesBusy) setModal(null); }}
             >
               <X size={19} />
             </button>
@@ -1453,7 +1447,7 @@ export default function Home() {
               {modal === "project"
                 ? "Une nouvelle recherche."
                 : modal === "import"
-                  ? "Un cours à explorer."
+                  ? "Ajouter des documents."
                   : "Votre atelier, à votre façon."}
             </h2>
             {modal === "project" ? (
@@ -1471,17 +1465,19 @@ export default function Home() {
                 <p className="muted">
                   Un espace pour vos sources, vos notes et votre conversation.
                 </p>
-                <button className="primary">
+                <SourceFiles sources={pendingFiles} onChange={setPendingFiles} accessKey={accessKey} onBusy={setFilesBusy} />
+                {importError && <p role="alert" className="alert">{importError}</p>}
+                <button className="primary" disabled={filesBusy}>
                   Créer le dossier <ArrowRight size={14} />
                 </button>
               </form>
             ) : modal === "import" ? (
               <form onSubmit={importCourse}>
+                <SourceFiles sources={pendingFiles} onChange={setPendingFiles} accessKey={accessKey} onBusy={setFilesBusy} />
+                <details className="import-text"><summary>Ou coller un texte</summary>
                 <label htmlFor="course-title">Titre du document</label>
                 <input
                   id="course-title"
-                  autoFocus
-                  required
                   maxLength={160}
                   value={courseTitle}
                   onChange={(e) => setCourseTitle(e.target.value)}
@@ -1490,20 +1486,18 @@ export default function Home() {
                 <label htmlFor="course-text">Texte du cours</label>
                 <textarea
                   id="course-text"
-                  required
                   maxLength={100000}
                   rows={10}
                   value={courseText}
                   onChange={(e) => setCourseText(e.target.value)}
                   placeholder="Collez le texte du cours avec ses titres et numéros de pages si disponibles…"
                 />
+                </details>
                 <p className="micro">
-                  Import texte uniquement pour cette première version. Le cours
-                  sera conservé sur cet appareil. L’assistant reçoit jusqu’à 6
-                  000 caractères par cours sélectionné, dans une limite globale
-                  de contexte.
+                  Les originaux sont conservés avec le dossier. L’assistant reçoit le texte extrait, jusqu’à 6 000 caractères par document dans une limite globale de contexte. Les images et les scans sans texte demandent une description ou transcription.
                 </p>
-                <button className="primary">
+                {importError && <p role="alert" className="alert">{importError}</p>}
+                <button className="primary" disabled={filesBusy}>
                   Ajouter au dossier <Plus size={14} />
                 </button>
               </form>
