@@ -40,7 +40,7 @@ Lancer `Installer-Pupuce.command` une première fois. L’assistant configure le
 ## Premier MVP disponible
 
 - Interface Next.js responsive, thèmes papier et nocturne, grain et trame décorative, navigation au clavier et mouvement réduit.
-- Dossiers indépendants, sélection de sources, notes et conversations sauvegardées dans le navigateur (`localStorage`). Pas de synchronisation serveur à ce stade.
+- Dossiers indépendants, sélection de sources, notes et conversations sauvegardées dans le navigateur (IndexedDB, avec migration automatique de l’ancienne sauvegarde localStorage). Pas de synchronisation serveur à ce stade.
 - Dossier de départ avec trois notices réellement récupérées dans l’API du Met et leurs reproductions CC0. Les portails BnF, Persée et Agorha sont des liens de départ, pas des articles prétendument consultés.
 - Recherche réelle dans le Met (œuvres avec image Open Access) et Open Library (notices d’ouvrages, pas leur contenu). Les titres de ces catalogues peuvent être en anglais : essayer aussi des mots-clés anglais.
 - Notice détaillée, provenance, identifiant d’inventaire, crédit et lien vers l’image HD lorsqu’ils sont disponibles.
@@ -64,6 +64,27 @@ npm test
 npm run build
 npm run typecheck
 ```
+
+## Rédiger un dossier complet
+
+L’onglet **Mon document** rassemble le plan, l’éditeur et les exports.
+
+1. Sélectionner ses sources et ajouter ses notes de recherche.
+2. Ouvrir **Structure et rédaction**, renommer/réordonner les parties et préciser les consignes (niveau, longueur, problématique).
+3. Choisir **Créer la structure** pour écrire soi-même, ou **Rédiger le dossier complet** pour demander un brouillon à Hermes. Le suivi reprend quand l’onglet est rouvert ; une génération reste dépendante de la disponibilité d’Hermes et du fournisseur.
+4. Relire le brouillon séparément, puis l’adopter. Le document existant n’est pas écrasé automatiquement ; sa version précédente peut être restaurée. Une réponse mal structurée ou une référence absente du corpus est refusée.
+5. Modifier titres, paragraphes, listes, citations, gras, italique et liens. Le sommaire suit les titres. Ajouter une image JPEG/PNG avec sa légende ou utiliser une reproduction du corpus. Jusqu’à trois images accessibles du corpus sont incorporées automatiquement au brouillon ; les institutions peuvent interdire l’import direct et demander un téléchargement manuel.
+6. Télécharger **Word** (vrai fichier DOCX éditable) ou **PDF** (A4, images incorporées, police de lecture intégrée, pagination). Les exports sont fabriqués à partir du contenu actuel, y compris les modifications manuelles. Le document Word utilise Georgia, sans exiger l’installation des polices de l’interface.
+
+Le dossier Cabanel peut être converti en document éditable sans IA avec **Partir du dossier Cabanel**. L’onglet **Lire l’exemple** conserve la version éditoriale de référence.
+
+Les documents et leurs images sont sauvegardés dans IndexedDB dans ce navigateur. Les anciennes sauvegardes localStorage sont reprises automatiquement sans supprimer l’original. L’export/restauration JSON inclut le document, le brouillon, la version précédente et les images. Les données restent propres à l’adresse locale ou à Vercel et au navigateur utilisé.
+
+Limites : 4 Mo et 12 images par document ; les images importées sont optimisées automatiquement. PDF/OCR, collaboration et synchronisation serveur ne sont pas ajoutés. Les citations et analyses demandent une relecture humaine ; la vérification des identifiants ne prouve pas les affirmations. Le corpus envoyé reste borné à environ 23 500 caractères de notices/extraits et 15 000 caractères de notes pour la rédaction ; les omissions sont signalées au modèle.
+
+Polices locales : EB Garamond et Source Sans 3, licences OFL incluses dans `public/fonts`. Aucune requête Google Fonts n’est nécessaire.
+
+Pour les vérifications : `npm test`, `npm run build`, `npm run typecheck`, `npm run test:mac-launcher`. Tests navigateur : `npx playwright install chromium --only-shell`, puis `npm run test:e2e` après le build. La CI exécute le cycle de vie sur macOS/Linux et le parcours navigateur sur Linux. Les tests IA utilisent un Hermes simulé ; une vraie génération doit être validée avec le fournisseur configuré sur le Mac.
 
 ## Connecter Hermes
 
@@ -98,7 +119,7 @@ Les prochaines briques sont : stockage serveur avec authentification, outils MCP
 
 Les reproductions sont documentées dans `public/art/ATTRIBUTION.md`. Le téléchargement HD ouvre la ressource officielle ; aucune image générée n’est présentée comme une œuvre historique.
 
-La sauvegarde JSON contient les cours, notes et échanges : la conserver comme un document personnel. La restauration remplace l’atelier courant. Les clés API et le code d’accès ne sont pas inclus dans les exports. La suppression des données du navigateur efface la copie locale.
+La sauvegarde JSON contient les cours, notes, échanges, documents éditables et images incorporées : la conserver comme un document personnel. La restauration remplace l’atelier courant. Les clés API et le code d’accès ne sont pas inclus dans les exports. La suppression des données du navigateur efface la copie locale.
 
 En hébergement partagé, ajouter avant ouverture : comptes utilisateurs, contrôle des dossiers côté serveur, limites d’usage et isolation des outils Hermes. Ne donner à Hermes que les outils et fichiers nécessaires au travail documentaire.
 
