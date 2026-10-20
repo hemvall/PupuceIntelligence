@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { localRequest, localCookie, equalSecret } from '@/lib/local-access.mjs';
 import { readWorkspace, writeWorkspace, workspaceDirectory } from '@/lib/local-workspace.mjs';
+import { MAX_WORKSPACE_CHARS } from '@/lib/import-schema';
 import { workspaceSchema } from '@/lib/workspace';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -20,7 +21,7 @@ export async function PUT(request: NextRequest) {
   if (!authorized(request)) return json({ error: 'Session locale expirée. Rouvre Pupuce avec le raccourci du Bureau.' }, 403);
   try {
     const body = await request.json();
-    if (typeof body.value !== 'string' || body.value.length > 60_000_000 || !(body.revision === null || typeof body.revision === 'string')) return json({ error: 'Sauvegarde invalide ou trop volumineuse (60 Mo maximum).' }, 400);
+    if (typeof body.value !== 'string' || body.value.length > MAX_WORKSPACE_CHARS || !(body.revision === null || typeof body.revision === 'string')) return json({ error: 'Sauvegarde invalide ou trop volumineuse (300 Mo maximum).' }, 400);
     const parsed = workspaceSchema.safeParse(JSON.parse(body.value));
     if (!parsed.success) return json({ error: 'Sauvegarde invalide.' }, 400);
     return json(await writeWorkspace(body.value, body.revision));

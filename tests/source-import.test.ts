@@ -47,7 +47,7 @@ test('rejects unsupported, disguised, corrupted and oversized imports', async ()
   await assert.rejects(importSource('fake.pdf', Buffer.from('abc')), /correspond/);
   await assert.rejects(importSource('fake.png', Buffer.from('abc')), /illisible/);
   await assert.rejects(importSource('fake.docx', Buffer.from('abc')), /illisible/);
-  await assert.rejects(importSource('large.txt', Buffer.alloc(8 * 1024 * 1024 + 1)), /volumineux/);
+  await assert.rejects(importSource('large.txt', Buffer.alloc(100 * 1024 * 1024 + 1)), /volumineux/);
   await assert.rejects(importSource('bad.txt', Buffer.from([0xff,0xff])), /UTF-8/);
 });
 test('import endpoint checks authorization and parses a real multipart file', async () => {
@@ -58,5 +58,42 @@ test('import endpoint checks authorization and parses a real multipart file', as
     assert.equal(unauthorized.status, 401);
     const response = await POST(new NextRequest('http://localhost/api/sources/import', { method:'POST', headers:{'x-app-access-key':'import-test'}, body: form }));
     assert.equal(response.status, 200); assert.equal((await response.json()).source.text, 'Mon cours sur David');
+  } finally { if (old === undefined) delete process.env.APP_ACCESS_KEY; else process.env.APP_ACCESS_KEY = old; }
+});
+
+test('PPTX extracts paragraphs in presentation order, preserves original and feeds AI context', async () => {
+  const { default: JSZip } = await import('jszip');
+  const zip = new JSZip();
+  zip.file('ppt/presentation.xml', '<p:presentation xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><p:sldIdLst><p:sldId id="1" r:id="r2"/><p:sldId id="2" r:id="r1"/></p:sldIdLst></p:presentation>');
+  zip.file('ppt/_rels/presentation.xml.rels', '<Relationships><Relationship Id="r1" Target="slides/slide1.xml"/><Relationship Id="r2" Target="slides/slide2.xml"/></Relationships>');
+  const slide = (text: string) => `<p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:p><a:r><a:t>${text}</a:t></a:r></a:p></p:sld>`;
+  zip.file('ppt/slides/slide1.xml', slide('Cabanel &amp; Raphaël'));
+  zip.file('ppt/slides/slide2.xml', slide('Renaissance'));
+  const buffer = await zip.generateAsync({ type: 'nodebuffer' });
+  const source = await importSource('Cours.PPTX', buffer);
+  assert.match(source.text!, /^\[Diapositive 1\]\nRenaissance\n\n\[Diapositive 2\]\nCabanel & Raphaël$/);
+  assert.equal(source.attachment?.extraction, 'text');
+  const workspace = initialWorkspace(); workspace.sources.push(source);
+  const restored = workspaceSchema.parse(JSON.parse(JSON.stringify(workspace)));
+  assert.deepEqual(Buffer.from(restored.sources.at(-1)!.attachment!.data, 'base64'), buffer);
+  assert.match(generationRequest('Art', ['Introduction'], '', '', [source]).context, /Renaissance/);
+  await assert.rejects(importSource('bad.pptx', Buffer.from('abc')), /illisible/);
+  await assert.rejects(importSource('old.ppt', buffer), /Enregistrer sous/);
+  zip.file('ppt/slides/slide2.xml', '<!DOCTYPE x [<!ENTITY x "test">]><x/>');
+  await assert.rejects(importSource('entity.pptx', await zip.generateAsync({ type: 'nodebuffer' })), /XML/);
+});
+
+test('files over the former 8 MiB limit import through multipart and survive workspace validation', async () => {
+  const buffer = Buffer.alloc(9 * 1024 * 1024, 'a');
+  const old = process.env.APP_ACCESS_KEY; process.env.APP_ACCESS_KEY = 'large-test';
+  try {
+    const form = new FormData(); form.append('file', new File([buffer], 'Grand-cours.txt'));
+    const response = await POST(new NextRequest('http://localhost/api/sources/import', { method: 'POST', headers: { 'x-app-access-key': 'large-test' }, body: form }));
+    assert.equal(response.status, 200);
+    const { source } = await response.json();
+    assert.equal(source.attachment.size, buffer.length);
+    assert.equal(source.attachment.extraction, 'partial');
+    const workspace = initialWorkspace(); workspace.sources.push(source);
+    assert.equal(workspaceSchema.parse(workspace).sources.at(-1)!.attachment!.size, buffer.length);
   } finally { if (old === undefined) delete process.env.APP_ACCESS_KEY; else process.env.APP_ACCESS_KEY = old; }
 });

@@ -443,7 +443,7 @@ export default function Home() {
   function addProject(e: React.FormEvent) {
     e.preventDefault();
     if (!projectName.trim() || filesBusy || !workspace) return;
-    if (JSON.stringify(workspace).length + JSON.stringify(pendingFiles).length > MAX_WORKSPACE_CHARS) { setImportError("Ces fichiers dépassent la capacité de l’atelier (55 Mo). Retire des fichiers avant de continuer."); return; }
+    if (JSON.stringify(workspace).length + JSON.stringify(pendingFiles).length > MAX_WORKSPACE_CHARS) { setImportError("Ces fichiers dépassent la capacité de l’atelier (300 Mo). Retire des fichiers avant de continuer."); return; }
     searchToken.current++;
     setSearching(false);
     const id = uid();
@@ -487,7 +487,7 @@ export default function Home() {
       sources.push({ id: "course-" + uid(), title: courseTitle.trim(), creator: "Document personnel", date: new Date().getFullYear().toString(), kind: "Cours", institution: "Mes cours", url: "", description: courseText.trim().slice(0, 180), text: courseText.trim(), access: "Texte importé", retrievedAt: new Date().toISOString() });
     }
     if (!sources.length) { setImportError("Choisis des fichiers ou colle un texte."); return; }
-    if (JSON.stringify(workspace).length + JSON.stringify(sources).length > MAX_WORKSPACE_CHARS) { setImportError("Ces fichiers dépassent la capacité de l’atelier (55 Mo). Retire des fichiers avant de continuer."); return; }
+    if (JSON.stringify(workspace).length + JSON.stringify(sources).length > MAX_WORKSPACE_CHARS) { setImportError("Ces fichiers dépassent la capacité de l’atelier (300 Mo). Retire des fichiers avant de continuer."); return; }
     setWorkspace(w => w ? { ...w, sources: [...w.sources, ...sources], projects: w.projects.map(p => p.id === project.id ? { ...p, selected: [...p.selected, ...sources.map(s => s.id)] } : p) } : w);
     setModal(null); setCourseTitle(""); setCourseText("");
     setArea("research"); setTab("selection"); setResultIds(null);
@@ -505,8 +505,8 @@ export default function Home() {
   async function restore(file?: File) {
     if (!file) return;
     try {
-      if (file.size > 60_000_000)
-        throw new Error("Fichier trop volumineux (60 Mo maximum).");
+      if (file.size > MAX_WORKSPACE_CHARS)
+        throw new Error("Fichier trop volumineux (300 Mo maximum).");
       const parsed = workspaceSchema.safeParse(JSON.parse(await file.text()));
       if (!parsed.success)
         throw new Error("Ce fichier n’est pas une sauvegarde Pupuce valide.");

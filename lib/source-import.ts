@@ -1,3 +1,4 @@
+import { extractPptx } from './pptx-import';
 import { extractRawText } from 'mammoth';
 import { fromBuffer } from 'yauzl';
 import { imageSize } from 'image-size';
@@ -13,7 +14,7 @@ async function validateDocx(buffer: Buffer) {
       zip.on('error', reject);
       zip.on('entry', entry => {
         total += entry.uncompressedSize; entries++;
-        if (total > 40_000_000 || entries > 3000 || entry.generalPurposeBitFlag & 1) {
+        if (total > 400_000_000 || entries > 3000 || entry.generalPurposeBitFlag & 1) {
           zip.close(); reject(new Error('Le document Word est protégé ou trop volumineux une fois décompressé.')); return;
         }
         if (entry.fileName === 'word/document.xml') hasDocument = true;
@@ -25,7 +26,7 @@ async function validateDocx(buffer: Buffer) {
   });
 }
 export async function importSource(name: string, buffer: Buffer): Promise<Source> {
-  if (!buffer.length || buffer.length > MAX_FILE_BYTES) throw new Error('Fichier vide ou trop volumineux : 8 Mo maximum.');
+  if (!buffer.length || buffer.length > MAX_FILE_BYTES) throw new Error('Fichier vide ou trop volumineux : 100 Mo maximum.');
   name = name.replace(/[\\/\u0000-\u001f]/g, '_').slice(0, 250);
   const ext = name.split('.').pop()?.toLowerCase();
   let mime: Attachment['mime'], extraction: Attachment['extraction'] = 'text', text = '', warning: string | undefined;
@@ -53,6 +54,15 @@ export async function importSource(name: string, buffer: Buffer): Promise<Source
       if (error instanceof Error && error.name === 'PasswordException') { extraction = 'empty'; warning = 'PDF protégé : original conservé, texte inaccessible. Importe une copie déverrouillée pour l’assistant.'; }
       else throw new Error('Impossible de lire ce PDF. Vérifie qu’il s’ouvre correctement sur ton appareil.');
     } finally { await task.destroy(); }
+  } else if (ext === 'pptx') {
+    mime = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+    const result = await extractPptx(buffer);
+    text = result.text;
+    extraction = result.partial ? 'partial' : text ? 'text' : 'empty';
+    warning = result.partial ? 'Extraction limitée à 100 diapositives et 200 000 caractères. L’original complet est conservé.' : 'Texte des diapositives extrait. Les images, graphiques et animations ne sont pas analysés automatiquement.';
+    if (!text) warning = 'Aucun texte détecté dans les diapositives. L’original est conservé ; les images ne sont pas analysées automatiquement.';
+  } else if (ext === 'ppt') {
+    throw new Error('Pour un ancien PowerPoint .ppt, utilise Enregistrer sous → .pptx dans PowerPoint ou LibreOffice.');
   } else if (ext === 'docx') {
     mime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     await validateDocx(buffer);
@@ -71,7 +81,7 @@ export async function importSource(name: string, buffer: Buffer): Promise<Source
     try { text = new TextDecoder('utf-8', { fatal: true }).decode(buffer).trim(); }
     catch { throw new Error('Enregistre ce fichier texte en UTF-8 avant de l’importer.'); }
     if (!text) throw new Error('Ce fichier texte est vide.');
-  } else throw new Error('Format accepté : PDF, Word .docx, JPG, PNG, WebP ou TXT. Pour un ancien fichier .doc, utilise Enregistrer sous → .docx dans Word.');
+  } else throw new Error('Format accepté : PDF, Word .docx, PowerPoint .pptx, JPG, PNG, WebP ou TXT. Pour un ancien fichier .doc, utilise Enregistrer sous → .docx dans Word.');
   if (text.length >= MAX_TEXT) { text = text.slice(0, MAX_TEXT); extraction = 'partial'; warning = 'Texte limité à 200 000 caractères. L’original complet est conservé.'; }
   return {
     id: 'file-' + crypto.randomUUID(), title: name, creator: 'Document personnel', date: new Date().getFullYear().toString(),
