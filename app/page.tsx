@@ -29,7 +29,7 @@ import {
 } from "lucide-react";
 import type { Project, Source, Workspace } from "@/lib/types";
 import { DocumentStudio } from "@/components/document-studio";
-import { loadWorkspace, saveWorkspace } from "@/lib/workspace-store";
+import { loadWorkspace, saveWorkspace, usesMacFolder } from "@/lib/workspace-store";
 import { Dossier, Guide } from "@/components/dossier";
 import { DOSSIER_ID, dossierSources, withDossier } from "@/lib/dossier";
 import { initialWorkspace } from "@/lib/seed";
@@ -114,11 +114,9 @@ export default function Home() {
           }
           setWorkspace(withDossier(parsed.data));
         } else setWorkspace(initialWorkspace());
-      } catch {
+      } catch (error) {
         if (live)
-          setSaveError(
-            "Impossible de lire la sauvegarde locale. Vérifie les autorisations du navigateur.",
-          );
+          setSaveError(error instanceof Error ? error.message : "Impossible de lire la sauvegarde locale.");
       }
     })();
     return () => {
@@ -136,15 +134,21 @@ export default function Home() {
           setSaving(false);
         }
       })
-      .catch(() => {
+      .catch((error) => {
         if (sequence === saveSequence.current) {
           setSaveError(
-            "La sauvegarde locale a échoué. Exporte une sauvegarde JSON pour conserver ton travail.",
+            error instanceof Error ? error.message : "La sauvegarde a échoué. Ton travail reste affiché : conserve cet onglet ouvert.",
           );
           setSaving(false);
         }
       });
   }, [workspace]);
+  useEffect(() => {
+    if (!saving && !saveError) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [saving, saveError]);
   useEffect(() => {
     if (notice) {
       const timer = setTimeout(() => setNotice(""), 4500);
@@ -1133,7 +1137,7 @@ export default function Home() {
             )}
             <footer className="main-footer">
               <span className="footer-ornament">✳</span>
-              <span>Documents et notes enregistrés dans ce navigateur.</span>
+              <span>{saveError ? "Enregistrement à vérifier" : saving ? "Enregistrement…" : usesMacFolder() ? "Enregistré automatiquement sur ce Mac" : "Enregistré dans ce navigateur"}</span>
               <span>PUPUCE · ATELIER DOCUMENTAIRE</span>
             </footer>
           </main>
@@ -1523,10 +1527,7 @@ export default function Home() {
                 <div className="setting-note">
                   <strong>Vos recherches vous appartiennent.</strong>
                   <p>
-                    Cette première version enregistre les dossiers dans ce
-                    navigateur. Exportez une sauvegarde pour les conserver
-                    ailleurs. La synchronisation entre appareils et les outils
-                    MCP spécialisés restent à ajouter.
+                    {usesMacFolder() ? "Tout est enregistré automatiquement dans Documents/PupuceIntelligence sur ce Mac : dossiers, notes, échanges, sources, documents et images importées. Les dix versions précédentes sont conservées dans Historique. Aucun export manuel nécessaire." : "Vos dossiers sont enregistrés dans ce navigateur. La sauvegarde automatique dans un dossier du Mac est disponible avec le lanceur local Pupuce."}
                   </p>
                 </div>
                 <div className="setting-actions">
@@ -1541,7 +1542,7 @@ export default function Home() {
                     }
                   >
                     <ArrowDownToLine size={14} />
-                    Sauvegarder tout
+                    Télécharger une copie
                   </button>
                   <button
                     className="secondary"
@@ -1552,7 +1553,7 @@ export default function Home() {
                   </button>
                 </div>
                 <p className="micro">
-                  La restauration remplace l’atelier de ce navigateur.
+                  La restauration remplace l’atelier actuel.
                   Sauvegardez votre travail actuel au préalable.
                 </p>
               </div>
@@ -1576,3 +1577,4 @@ export default function Home() {
     </div>
   );
 }
+
