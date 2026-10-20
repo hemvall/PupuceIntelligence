@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAccess, hermesConfig } from "@/lib/hermes.mjs";
+import { recordRun } from "@/lib/monitoring";
 export const runtime = "nodejs";
 async function proxy(
   request: NextRequest,
@@ -49,8 +50,11 @@ async function proxy(
         { status: r.status === 404 ? 404 : 502 },
       );
     const data = await r.json();
+    if (["completed", "failed", "cancelled", "interrupted"].includes(data.status)) {
+      await recordRun(id, { runId: id, status: data.status, output: typeof data.output === "string" ? data.output : undefined, usage: data.usage ?? null, model: data.model ?? null });
+    }
     return NextResponse.json(
-      { status: data.status, output: data.output, run_id: data.run_id },
+      { status: data.status, output: data.output, run_id: data.run_id, usage: data.usage, model: data.model },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch {

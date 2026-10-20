@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { documentSchema, jobSchema } from "./document/model";
+import { changeSchema } from "./assistant-changes";
 const source = z.object({
   id: z.string(),
   title: z.string(),
@@ -37,6 +38,7 @@ const project = z.object({
   documentOutline: z.array(z.string().max(250)).max(16).optional(),
   documentBrief: z.string().max(3000).optional(),
   documentError: z.string().optional(),
+  activeRunBase: z.object({ notes: z.string(), document: z.string() }).optional(),
   activeRun: z.string().optional(),
   activeRunMessageId: z.string().optional(),
   messages: z.array(
@@ -44,6 +46,7 @@ const project = z.object({
       id: z.string(),
       role: z.enum(["user", "assistant"]),
       content: z.string(),
+      change: changeSchema.and(z.object({ baseNotes: z.string(), baseDocument: z.string(), state: z.enum(["pending", "accepted", "rejected"]) })).optional(),
     }),
   ),
 });

@@ -2744,3 +2744,8 @@ textarea {
   text-transform: none;
   margin-top: 3px;
 }
+.change-review, .monitoring { padding: 16px; border: 1px solid var(--border, #d5cfbf); border-radius: 8px; margin: 12px 0; }
+.change-review pre, .monitoring pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; max-height: 300px; overflow: auto; }
+.change-review .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; }
+.monitoring { max-height: 360px; overflow: auto; flex-shrink: 0; }
+.change-review summary, .monitoring summary { cursor: pointer; padding: 8px 0; }

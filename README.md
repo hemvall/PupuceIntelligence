@@ -128,3 +128,11 @@ En hébergement partagé, ajouter avant ouverture : comptes utilisateurs, contr�
 Le dossier Cabanel est un contenu éditorial préparé et sourcé, accessible sans Hermes : analyse visuelle signalée comme proposition, contexte, passages de Milton, comparaisons, réception, plan d’oral et bibliographie avec niveaux d’accès. Le catalogue de 2010 est une notice bibliographique, pas un livre ingéré. Les différences entre l’esquisse de Carpentras et le tableau du musée Fabre sont explicites. La reproduction de Rvalette est distribuée sans modification, sous CC BY-SA 3.0 (voir `public/art/ATTRIBUTION.md`).
 
 Le guide de prise en main s’ouvre à la première visite du dossier et peut être relancé. Les suggestions préparent un message avant envoi ; elles ne simulent pas de réponse IA. Le dossier est ajouté aux sauvegardes existantes sans modifier leurs notes, sélections ou dossier actif. Les notes de l’exemple sont éditables et incluses dans l’export Markdown. L’onglet Dossier conserve la version éditoriale de référence. Le contexte envoyé à Hermes contient au plus 16 000 caractères de notes et indique leur éventuelle troncature.
+
+### Modifications proposées par l’assistant
+
+Dans la conversation, demander une modification des notes ou du document produit une proposition avec aperçu avant/après. **Valider les changements** est la seule action qui applique la proposition ; **Refuser** conserve le dossier. Les propositions sont conservées dans la sauvegarde locale. Si le contenu ciblé a été modifié entre-temps, une nouvelle proposition est nécessaire. La bibliothèque de sources n’est pas modifiable par ce mécanisme.
+
+### Historique IA local
+
+Le panneau « Historique et consommation IA » de l’assistant affiche les prompts, réponses, états et modèle, ainsi que les tokens entrée/sortie transmis par Hermes. Une absence de métriques est affichée explicitement ; aucun comptage estimé n’est présenté comme réel. Le suivi couvre aussi les demandes du studio documentaire. Les requêtes acceptées par Hermes sont enregistrées dans `~/Library/Application Support/Pupuce Intelligence/monitoring` (un JSON par exécution, incluant le contexte envoyé). `PUPUCE_MONITORING_DIR` permet de choisir un autre dossier. Les fichiers restent sur la machine qui héberge l’application ; l’API de lecture utilise le même contrôle d’accès que l’assistant.
