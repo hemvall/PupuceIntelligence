@@ -8,7 +8,7 @@ function database(): Promise<IDBDatabase> {
     request.onerror = () => reject(request.error);
   });
 }
-export async function loadWorkspace(): Promise<string | null> {
+async function loadBrowserWorkspace(): Promise<string | null> {
   if (!("indexedDB" in window)) return localStorage.getItem(KEY);
   const db = await database();
   try {
@@ -22,7 +22,7 @@ export async function loadWorkspace(): Promise<string | null> {
     db.close();
   }
 }
-export async function saveWorkspace(value: string): Promise<void> {
+async function saveBrowserWorkspace(value: string): Promise<void> {
   if (!("indexedDB" in window)) {
     localStorage.setItem(KEY, value);
     return;
@@ -38,4 +38,39 @@ export async function saveWorkspace(value: string): Promise<void> {
   } finally {
     db.close();
   }
+}
+
+
+let diskRevision: string | null = null;
+let diskReady = false;
+let writes: Promise<void> = Promise.resolve();
+export function usesMacFolder() {
+  return typeof window !== "undefined" && window.location.origin === "http://127.0.0.1:3210";
+}
+async function diskRequest(method = "GET", value?: string) {
+  const response = await fetch("/api/local/workspace", {
+    method, cache: "no-store", credentials: "same-origin",
+    ...(method === "PUT" ? { headers: { "Content-Type": "application/json" }, body: JSON.stringify({ value, revision: diskRevision }) } : {}),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || "Sauvegarde sur le Mac indisponible.");
+  return data as { value: string | null; revision: string | null };
+}
+export async function loadWorkspace(): Promise<string | null> {
+  if (!usesMacFolder()) return loadBrowserWorkspace();
+  const saved = await diskRequest();
+  diskRevision = saved.revision;
+  diskReady = true;
+  // Only migrate the old browser workspace when no file exists on disk.
+  return saved.value ?? await loadBrowserWorkspace();
+}
+export function saveWorkspace(value: string): Promise<void> {
+  if (!usesMacFolder()) return saveBrowserWorkspace(value);
+  const operation = writes.then(async () => {
+    if (!diskReady) throw new Error("Recharge Pupuce pour lire la sauvegarde du Mac avant de modifier les dossiers.");
+    const saved = await diskRequest("PUT", value);
+    diskRevision = saved.revision;
+  });
+  writes = operation.catch(() => {});
+  return operation;
 }

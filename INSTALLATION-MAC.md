@@ -28,7 +28,11 @@ Le profil Hermes est isolé dans `~/Library/Application Support/PupuceIntelligen
 - **Configurer-IA.command** arrête les services et permet de changer le fournisseur/modèle. Relancer ensuite Pupuce.
 - **Diagnostic-Pupuce.command** indique l’état des services et propose un test réel de réponse. Il n’affiche pas les clés.
 
-Toujours utiliser **http://127.0.0.1:3210**, avec le même navigateur et sans navigation privée. `localhost`, l’autre adresse Vercel et les autres navigateurs ont chacun leur stockage distinct. Les dossiers et leurs images restent dans IndexedDB dans le navigateur : **exporter régulièrement la sauvegarde JSON depuis les réglages**. Si elle a déjà travaillé sur Vercel, exporter sa sauvegarde là-bas puis la restaurer localement (la restauration remplace l’atelier local).
+Ouvrir Pupuce avec le raccourci du Bureau (**http://127.0.0.1:3210**). Tous les dossiers, cours importés, sources, notes, conversations, documents modifiables et images intégrées sont **enregistrés automatiquement dans `~/Documents/PupuceIntelligence/atelier.json`**. Aucun export manuel n’est nécessaire. Le sous-dossier `Historique` conserve les dix versions précédentes. Les images provenant d’URL externes restent des liens ; les images importées dans les documents sont incluses dans la sauvegarde. Les clés API restent séparées dans la configuration Hermes.
+
+Au premier lancement de cette version, les données déjà présentes dans ce navigateur sont récupérées automatiquement si aucun atelier n’existe encore sur disque. Ensuite, le fichier du Mac est prioritaire et peut être retrouvé depuis un autre navigateur ouvert avec le raccourci. Pour les données créées sur Vercel ou dans un autre navigateur avant cette mise à jour, télécharger une copie depuis cet ancien atelier puis la restaurer une fois dans Pupuce locale. Une restauration remplace l’atelier courant ; l’ancienne version reste dans Historique.
+
+Attendre « Enregistré » avant de fermer une modification. En cas d’erreur de disque, d’autorisation macOS ou de conflit entre fenêtres, un message s’affiche : garder l’onglet ouvert et télécharger une copie si nécessaire. Ne pas utiliser deux fenêtres pour modifier simultanément l’atelier. Pour mettre à jour une installation existante, relancer `Installer-Pupuce.command` depuis la nouvelle version du dépôt ; les dossiers dans Documents sont conservés.
 
 ## Rédiger et exporter
 
@@ -49,7 +53,7 @@ L’exemple Cabanel est modifiable sans appel IA via **Partir du dossier Cabanel
 
 Pour mettre à jour, arrêter Pupuce, télécharger la nouvelle version puis relancer Installer-Pupuce.command. Les clés et le profil existants sont conservés ; le fournisseur peut être gardé en répondant `n` à la question de reconfiguration. Hermes lui-même n’est pas mis à jour silencieusement ; utiliser son outil de mise à jour officiel lorsque nécessaire.
 
-Pour supprimer l’installation : exporter d’abord les dossiers JSON, lancer Arrêter-Pupuce, puis supprimer les quatre raccourcis du Bureau et le dossier `~/Library/Application Support/PupuceIntelligence`. Un Hermes installé par son installeur officiel peut aussi avoir un lanceur dans `~/.local/bin` et un magasin de dépendances partagé : suivre sa documentation officielle pour le désinstaller. Les données du navigateur ne sont pas supprimées par ces opérations.
+Pour supprimer l’installation : lancer Arrêter-Pupuce, puis supprimer les quatre raccourcis du Bureau et le dossier `~/Library/Application Support/PupuceIntelligence`. Un Hermes installé par son installeur officiel peut aussi avoir un lanceur dans `~/.local/bin` et un magasin de dépendances partagé : suivre sa documentation officielle pour le désinstaller. Les dossiers dans `~/Documents/PupuceIntelligence` ne sont pas supprimés par ces opérations.
 
 ## Périmètre et validation
 
@@ -58,3 +62,4 @@ Cette installation active le pont IA existant. Elle n’ajoute pas l’import PD
 Les tests automatisés couvrent les restrictions de la session locale, les secrets générés/conservés et le pont Hermes avec un service simulé. Le test proposé sur le Mac valide la véritable génération API. Le lancement natif Finder et l’installation officielle de Hermes doivent être vérifiés sur le Mac cible ; ils ne sont pas simulés comme une validation réelle.
 
 Références officielles : [installation Hermes](https://hermes-agent.nousresearch.com/docs/getting-started/installation), [API Server](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server).
+
