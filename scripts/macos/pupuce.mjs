@@ -51,7 +51,7 @@ async function stop() {
   for (let i = 0; i < 60 && [state.app, state.hermes].some(alive); i++) await sleep(500);
   if ([state.app, state.hermes].some(alive)) throw new Error('Une recherche termine encore son arrêt. Réessaie dans un instant.');
   rmSync(statePath, { force: true });
-  console.log('Pupuce est arrêtée. Les dossiers du navigateur sont conservés.');
+  console.log('Pupuce est arrêtée. Les dossiers enregistrés sur le Mac sont conservés.');
 }
 async function portFree(port) {
   return new Promise(resolve => {
@@ -98,7 +98,7 @@ async function start(openBrowser = true) {
     await waitFor('http://127.0.0.1:8642/v1/models', { Authorization: `Bearer ${config.HERMES_API_KEY}` }, gateway);
     const launchToken = secret();
     const next = background(process.execPath, [join(app, 'node_modules/next/dist/bin/next'), 'start', '--hostname', '127.0.0.1', '--port', '3210'], 'pupuce.log', {
-      ...config, NODE_ENV: 'production', PUPUCE_LOCAL_MODE: 'true', PUPUCE_LAUNCH_TOKEN: launchToken,
+      ...config, NODE_ENV: 'production', PUPUCE_LOCAL_MODE: 'true', PUPUCE_WORKSPACE_DIR: process.env.PUPUCE_WORKSPACE_DIR || join(homedir(), 'Documents/PupuceIntelligence'), PUPUCE_LAUNCH_TOKEN: launchToken,
     }, app);
     await sleep(500);
     state.app = { pid: next.pid, identity: processIdentity(next.pid) };
@@ -107,7 +107,7 @@ async function start(openBrowser = true) {
     await waitFor('http://127.0.0.1:3210', {}, next);
     if (openBrowser) run('open', [`http://127.0.0.1:3210/api/local/open?token=${launchToken}`]);
     console.log('Pupuce est prête : http://127.0.0.1:3210');
-    console.log('Tu peux fermer ce Terminal. Utilise toujours cette adresse et le même navigateur pour retrouver tes dossiers.');
+    console.log('Tu peux fermer ce Terminal. Tes dossiers sont enregistrés automatiquement dans Documents/PupuceIntelligence.');
     return config;
   } catch (e) { await stop(); throw e; }
 }
@@ -186,7 +186,7 @@ async function install() {
   shortcuts();
   await start();
   if ((await ask('Tester une vraie réponse IA (petit appel facturé par ton fournisseur) ? [O/n] ')).toLowerCase() !== 'n') await smoke();
-  console.log('Installation terminée. Les raccourcis sont sur le Bureau. Pense à exporter une sauvegarde JSON de tes dossiers.');
+  console.log('Installation terminée. Les raccourcis sont sur le Bureau. Tes dossiers seront sauvegardés automatiquement dans Documents/PupuceIntelligence.');
 }
 async function doctor() {
   console.log(`Installation : ${app}\nJournaux : ${logs}`);
@@ -221,3 +221,4 @@ try {
   else throw new Error('Commande inconnue.');
 } catch (error) { console.error(`\n${error.message}`); process.exitCode = 1; }
 finally { if (ownsLock) rmSync(lockPath, { recursive: true, force: true }); }
+
